@@ -513,7 +513,7 @@ const ONLINE_CARDS=[
 
 ];
 for(const c of ONLINE_CARDS){if(ONLINE_NEW_CARD_STYLES[c.name]){CARD_THEMES[c.id]=ONLINE_NEW_CARD_STYLES[c.name];CARD_TEXT_COLORS[c.id]='#172035';c.desc=ONLINE_NEW_CARD_DESCRIPTIONS[c.name]}}
-{const c=ONLINE_CARDS.find(x=>x.name==='はいちーず！！');if(c){CARD_THEMES[c.id]='linear-gradient(135deg,#ffe267,#6acb85)';CARD_TEXT_COLORS[c.id]='#172035'}}
+{const c=ONLINE_CARDS.find(x=>x.name==='はいちーず！！');if(c){CARD_THEMES[c.id]='linear-gradient(135deg,#f5cb39,#399d62)';CARD_TEXT_COLORS[c.id]='#172035'}}
 const cards=ONLINE_CARDS.map(c=>c.name);
 let yakaPickerOpen=false,yakaSelected=[];
 const YAKA_COST_NAMES=new Set(['やかましいわ','針治療','人を大切にできないやつは自分も大切にされない【名言】','ガチナイス']);
@@ -1580,7 +1580,7 @@ async function act(kind){
     if(k==='northstar'){drawCopied(2);if(!patch.state&&m.hand.length<=2)moveAllOwnHandToUsed();return true}
     // 複雑なD連打・選択式カードも、通常使用と同じ処理を通してコピーする。
     if(k==='mugi'){damage++;ownEffects.asleep=false;ownEffects.drowsy=false;ownEffectsDirty=true;return true}
-    if(k==='hakama'){damage++;resolveDragonChain(name);return true}
+    if(k==='hakama'){resolveDragonChain(name);if(!patch.state)damage++;return true}
     if(k==='dragon'){resolveDragonChain(name);return true}
     if(k==='kyogen'){resolveKyogen();if(!patch.state)resolveDragonChain(name);return true}
     if(k==='whale'){resolveWhale();if(!patch.state)resolveDragonChain(name);return true}
@@ -1788,7 +1788,7 @@ async function act(kind){
       tx.update(g,{state:'finished',winner:opponentUid,finishReason:'通常ドロー時の山札切れ',finishedAt:Date.now(),drawn:true,pendingCard:null,pendingWhale:null,pendingWhaleQueue:[],extraTurn:false,log:[...(v.log||[]),'山札切れで敗北'].slice(-30)});
     });
     recordDiagnostic('勝敗確定','通常ドロー時の山札切れ：トランザクション確定');return} 
-   (()=>{const drawn=drawTracked(m);assassinOnDraw(side,drawn,'ドロー')})();patch.drawn=true;logs.push('通常ドロー')}
+   (()=>{const drawn=drawTracked(m);assassinOnDraw(side,drawn,'ドロー')})();patch.drawn=true;logs.push('通常ドロー');if(!m.deck.length&&!patch.state){patch.state='finished';patch.winner=opponentUid;logs.push('通常ドローで山札が0になったため敗北')}}
    if((ownEffects.napDelay||0)>0){ownEffects.napDelay--;ownEffectsDirty=true;logs.push('お昼寝：休止開始まであと'+ownEffects.napDelay+'回の自分ターン')}
   }else{
    if(!game.drawn)return;
@@ -2305,6 +2305,8 @@ async function act(kind){
   if(ownEffectsDirty)patch[side+'Effects']=ownEffects;if(enemyEffectsDirty)patch[opponent+'Effects']=enemyEffects;
   if(kind==='resolve')patch.pendingCard=null;
   patch[side+'HandCount']=m.hand.length;if(opponentPrivate)patch[opponent+'HandCount']=opponentPrivate.hand.length;patch.log=logs.slice(-30);patch.fxEvents=fxEvents.slice(-24);
+  // 山札切れ敗北は、効果でカードが移動した結果にも適用する。
+  if(!m.deck.length&&patch.state!=='finished'){patch.state='finished';patch.winner=opponentUid;logs.push('山札が0になったため敗北');patch[side+'HandCount']=m.hand.length;patch.log=logs.slice(-30)}
   // 自分の非公開カード情報と公開対戦情報をまとめて反映（ただし不正対策ではない）。
   // 競合対策：公開状態と両者の非公開カード状態をトランザクション内で再検証。
   // カード効果の計算はローカルで行うため、古い手札・山札で上書きしないようにする。
