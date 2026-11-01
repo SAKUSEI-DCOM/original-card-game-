@@ -449,7 +449,7 @@ const ONLINE_NEW_CARD_STYLES={'フラミンゴ左手の法則': 'linear-gradient
 const ONLINE_NEW_CARD_DESCRIPTIONS={'フラミンゴ左手の法則': '相手ターン終了時、そのターンにカード効果が使われていれば使用できる。次の自分のカード効果が2倍になる。', 'むぎむぎｱﾀｯｸ': '相手に1ダメージ。睡眠中でも使用可能。自分の眠気・睡眠状態を解除する。', 'コールドスリープ': '自分を睡眠状態にする。睡眠状態の間、あらゆるダメージを受けない。', '癒し系アイドル': 'このゲーム中のライフ上限を10にし、ライフ回復量を2倍にする。', '封印されし●●ゾディア': '手札が3枚以下なら使用可能：相手に1ダメージ。手札からUSEDに置かれた際、手札2枚を捨てれば追加1ダメージ。相手効果による移動で手札0枚ならさらに1ダメージ。', 'ユー ロス！！': '3枚引き、手札1枚を山札の一番上に置く。その後残りの手札を全てUSEDへ送り、相手に1ダメージ。'};
 const ONLINE_CARDS=[
  {name:'ﾌﾞﾝﾁｮｳｱﾀｯｸ',id:0,kind:'buncho'},
- {name:'観測者の悪ノリ',id:1,kind:'draw'},
+ {name:'正論パンチ',id:1,kind:'draw'},
  {name:'うーんひらめいた！',id:2,kind:'draw'},
  {name:'必殺ファン●ション',id:6,kind:'special3'},
  {name:'小森アタック',id:8,kind:'hit',limit:20},
@@ -499,7 +499,7 @@ const ONLINE_CARDS=[
  {name:'眠気があってちゃんと良かったなぽ',id:27,kind:'napo'},
  {name:'人を大切にできないやつは自分も大切にされない【名言】',id:24,kind:'quote'},
  {name:'文化の勝利',id:38,kind:'culture'},
- {name:'全知全能の神、弱そう',id:20,kind:'god'},
+ {name:'( \u0027ω\u0027)ﾌｪｯ!?',id:20,kind:'god'},
  {name:'お昼寝(昼夜逆転)',id:49,kind:'nap'},
  {name:'企画破壊',id:53,kind:'counter'},
  {name:'やかましいわ',id:22,kind:'counter'},
@@ -605,13 +605,13 @@ function effectLabels(e,round){
 const SHARED_SAMPLE_DECKS={
  "KTワンショット": {
   "チトセニウム": 3,
-  "全知全能の神、弱そう": 3,
+  "( \u0027ω\u0027)ﾌｪｯ!?": 3,
   "究極拳巫女パンチ": 3,
   "月民の隠れ家": 1,
   "導く北極星": 3,
   "行っちゃうの？…": 2,
   "うどん。": 2,
-  "観測者の悪ノリ": 2,
+  "正論パンチ": 2,
   "人を大切にできないやつは自分も大切にされない【名言】": 1
  },
  "RKロック": {
@@ -630,7 +630,7 @@ const SHARED_SAMPLE_DECKS={
   "なんでもござれの藍白屋": 3,
   "ピカ犬": 3,
   "みなさん、いつまで寝てるの！！": 3,
-  "観測者の悪ノリ": 2,
+  "正論パンチ": 2,
   "そう！高〇健！！": 2,
   "しのみーらいぶ": 1
  },
@@ -651,7 +651,7 @@ const SHARED_SAMPLE_DECKS={
   "月民の隠れ家": 2,
   "人手不足の魔導書": 1,
   "正論パンチ": 3,
-  "全知全能の神、弱そう": 2
+  "( \u0027ω\u0027)ﾌｪｯ!?": 2
  },
  "RVメタビート": {
   "江戸姫": 3,
@@ -1622,7 +1622,7 @@ async function act(kind){
     const drawCopied=(n)=>{for(let i=0;i<n;i++){if(patch.state)return;if(!m.deck.length){patch.state='finished';patch.winner=opponentUid;logs.push('コピー効果：山札切れで敗北');return}const c=drawTracked(m);assassinOnDraw(side,c,'コピー効果');if(!m.deck.length&&!patch.state){patch.state='finished';patch.winner=opponentUid;logs.push('コピー効果：山札が0になったため敗北');return}}};
     const healCopied=(n)=>{if(patch.state==='finished')return;patch[side+'Life']=Math.min(ownEffects.maxLife||7,(patch[side+'Life']??game[side+'Life'])+(n)*(ownEffects.healingDouble?2:1))};
     if(['hit','buncho','mochi','otomo','hamster'].includes(k)){damage++;if(k==='mochi'){ownEffects.mochiProtectUntil=game.round+1;ownEffectsDirty=true}if(k==='hamster'){ownEffects.hamster=(ownEffects.hamster||0)+1;ownEffectsDirty=true}return true}
-    if(['draw','draw1'].includes(k)||['観測者の悪ノリ','うーんひらめいた！','星色の推し活','ﾎｯﾄ₍₍(ง˘ω˘)ว⁾⁾ﾄﾞｯｸ'].includes(name)){drawCopied(1);return true}
+    if(['draw','draw1'].includes(k)||['正論パンチ','うーんひらめいた！','星色の推し活','ﾎｯﾄ₍₍(ง˘ω˘)ว⁾⁾ﾄﾞｯｸ'].includes(name)){drawCopied(1);return true}
     if(k==='chitose'){if(m.hand.length>=4)drawCopied(2);return true}
     if(k==='northstar'){drawCopied(2);if(!patch.state&&m.hand.length<=2)moveAllOwnHandToUsed();return true}
     // 複雑なD連打・選択式カードも、通常使用と同じ処理を通してコピーする。
@@ -1905,7 +1905,7 @@ async function act(kind){
     else if(cardInfo?.kind==='hideout'){resolveHideoutDragon();if(!patch.state)resolveDragonChain(card)}
     else if(card==='必殺ファン●ション'){damage=3*repeats}
     else if(card==='究極拳巫女パンチ'){damage=5*repeats}
-    else if(['観測者の悪ノリ','うーんひらめいた！','星色の推し活','ﾎｯﾄ₍₍(ง˘ω˘)ว⁾⁾ﾄﾞｯｸ'].includes(card)){
+    else if(['正論パンチ','うーんひらめいた！','星色の推し活','ﾎｯﾄ₍₍(ง˘ω˘)ว⁾⁾ﾄﾞｯｸ'].includes(card)){
      for(let r=0;r<repeats;r++){if(isTurnEffectActive(ownEffects,'block',game.round)){logs.push('ドロー封じにより効果ドロー無効');break}if(!m.deck.length){patch.state='finished';patch.winner=opponentUid;logs.push('効果ドロー時に山札切れで敗北');break}
      (()=>{const drawn=drawTracked(m);assassinOnDraw(side,drawn,'ドロー')})()}
     }
@@ -1930,7 +1930,7 @@ async function act(kind){
       if(peek.length){const num=strictChoiceNumber(prompt('山札上3枚から手札に加えるカードを選択\n'+peek.map((c,i)=>(i+1)+'：'+c).join('\n'),'1'));const at=Number.isInteger(num)&&num>=1&&num<=peek.length?num-1:-1;if(at>=0){const base=m.deck.length-peek.length;const drawn=transferExternal(m,'deck',base+at,'hand');assassinOnDraw(side,drawn,'選択ドロー');for(let i=peek.length-1;i>=0;i--){if(i===at)continue;transferExternal(m,'deck',base+i,'used')}}else throw Error('カード選択：有効な山札番号を選び直してください')}
       resolveDragonChain(card);
     }
-    else if(cardInfo?.kind==='god'){logs.push('全知全能の神、弱そう：通常使用では効果なし（初回ダメージ時に手札から発動）')}
+    else if(cardInfo?.kind==='god'){logs.push('( \u0027ω\u0027)ﾌｪｯ!?：通常使用では効果なし（初回ダメージ時に手札から発動）')}
     else if(cardInfo?.kind==='nap'){
       patch[side+'Life']=Math.min(ownEffects.maxLife||7,(patch[side+'Life']??game[side+'Life'])+(3)*(ownEffects.healingDouble?2:1));
       ownEffects.napDelay=1;ownEffects.napRemaining=2;ownEffectsDirty=true;
@@ -2113,7 +2113,7 @@ async function act(kind){
       const all=[...m.hand,...m.deck,...m.used];const counts=[m.hand.length,m.deck.length,m.used.length];const slots=[...['hand','deck','used'].flatMap(zone=>m[zone].map((name,i)=>({name,rec:(m.externalInstances||[]).find(r=>r.zone===zone&&r.index===i)||null})))];const shuffled=shuffle(slots);for(const [z,n] of [['hand',counts[0]],['deck',counts[1]],['used',counts[2]]]){const picked=shuffled.splice(0,n);m[z]=picked.map(x=>x.name);picked.forEach((x,i)=>{if(x.rec){x.rec.zone=z;x.rec.index=i}})}
     }
     else if(cardInfo?.kind==='npc'){
-      const hits=m.deck.filter(x=>['観測者の悪ノリ','うーんひらめいた！','星色の推し活','ﾎｯﾄ₍₍(ง˘ω˘)ว⁾⁾ﾄﾞｯｸ'].includes(x));for(const c of hits){transferExternal(m,'deck',m.deck.indexOf(c),'hand');assassinOnDraw(side,c,'NPC')}
+      const hits=m.deck.filter(x=>['正論パンチ','うーんひらめいた！','星色の推し活','ﾎｯﾄ₍₍(ง˘ω˘)ว⁾⁾ﾄﾞｯｸ'].includes(x));for(const c of hits){transferExternal(m,'deck',m.deck.indexOf(c),'hand');assassinOnDraw(side,c,'NPC')}
     }
     else if(cardInfo?.kind==='parasite'){enemyEffects.parasite=true;enemyEffectsDirty=true}
     else if(cardInfo?.kind==='cheese'){
@@ -2148,7 +2148,7 @@ async function act(kind){
       if(m.used.filter(x=>/[導星術]/.test(x)).length>=30)damage+=7*repeats;else logs.push('それは未来を読む占術：USEDの対象カード30枚未満')
     }
     else if(cardInfo?.kind==='secretbook'){
-      const q=await getOpponentPrivate();const copyableKinds=new Set(['hit','buncho','mochi','otomo','hamster','draw','draw1','chitose','northstar','heal','shino','funfun','love','pikainu','aiya','sleepmagic','massage','dreammore','parasite','microphone','steam','soldier','speed','idol','block','edo','punch','special3','mugi','hakama','dragon','kyogen','whale','hideout','select']);const options=q.used.filter(x=>copyableKinds.has(ONLINE_CARDS.find(c=>c.name===x)?.kind)||['観測者の悪ノリ','うーんひらめいた！','星色の推し活','ﾎｯﾄ₍₍(ง˘ω˘)ว⁾⁾ﾄﾞｯｸ'].includes(x));if(!options.length)logs.push('秘密のメカクレ魔導書：コピー可能な相手USEDカードなし');if(options.length){const rawChoice=prompt('相手USEDの対象カード\n'+options.map((x,i)=>(i+1)+'：'+x).join('\n'),'1');const n=strictChoiceNumber(rawChoice);const c=Number.isInteger(n)&&n>=1&&n<=options.length?options[n-1]:null;if(!c)throw Error('秘密のメカクレ魔導書：有効な対象番号を選び直してください');if(c){transferExternal(q,'used',q.used.indexOf(c),'deck',0);const applied=await copyEffect(c);if(!applied)throw Error('秘密のメカクレ魔導書：このカードのコピー効果は未対応です');logs.push('秘密のメカクレ魔導書：'+c+'を相手山札の底へ／コピー効果を発動')}}
+      const q=await getOpponentPrivate();const copyableKinds=new Set(['hit','buncho','mochi','otomo','hamster','draw','draw1','chitose','northstar','heal','shino','funfun','love','pikainu','aiya','sleepmagic','massage','dreammore','parasite','microphone','steam','soldier','speed','idol','block','edo','punch','special3','mugi','hakama','dragon','kyogen','whale','hideout','select']);const options=q.used.filter(x=>copyableKinds.has(ONLINE_CARDS.find(c=>c.name===x)?.kind)||['正論パンチ','うーんひらめいた！','星色の推し活','ﾎｯﾄ₍₍(ง˘ω˘)ว⁾⁾ﾄﾞｯｸ'].includes(x));if(!options.length)logs.push('秘密のメカクレ魔導書：コピー可能な相手USEDカードなし');if(options.length){const rawChoice=prompt('相手USEDの対象カード\n'+options.map((x,i)=>(i+1)+'：'+x).join('\n'),'1');const n=strictChoiceNumber(rawChoice);const c=Number.isInteger(n)&&n>=1&&n<=options.length?options[n-1]:null;if(!c)throw Error('秘密のメカクレ魔導書：有効な対象番号を選び直してください');if(c){transferExternal(q,'used',q.used.indexOf(c),'deck',0);const applied=await copyEffect(c);if(!applied)throw Error('秘密のメカクレ魔導書：このカードのコピー効果は未対応です');logs.push('秘密のメカクレ魔導書：'+c+'を相手山札の底へ／コピー効果を発動')}}
     }
     else if(cardInfo?.kind==='catmagic'){
       const animal=/猫|犬|鳥|ハム|ﾌﾞﾝﾁｮｳ|オルカ|cat|dog|bird|hamster/i;
@@ -2329,14 +2329,14 @@ async function act(kind){
    // カード効果・2枚攻撃の両方を対象とし、防御で0になった場合は発動しない。
    if(damage>0&&!patch.state&&!game[side+'FirstDealt']){
      patch[side+'FirstDealt']=true;
-     const godIndex=m.hand.indexOf('全知全能の神、弱そう');
-     if(godIndex>=0&&!enemyEffects.damageCap&&confirm('初めて相手にダメージを与えました。\n「全知全能の神、弱そう」を手札からUSEDへ送り、追加1ダメージを与えますか？')){
+     const godIndex=m.hand.indexOf('( \u0027ω\u0027)ﾌｪｯ!?');
+     if(godIndex>=0&&!enemyEffects.damageCap&&confirm('初めて相手にダメージを与えました。\n「( \u0027ω\u0027)ﾌｪｯ!?」を手札からUSEDへ送り、追加1ダメージを与えますか？')){
        moveOwnHandToUsed(godIndex);
        // 追加ダメージも腐白蛇などのダメージ上限を超えないように扱う。
        const godBonus=enemyEffects.damageCap?0:1;
        damage+=godBonus;
-       logs.push('全知全能の神、弱そう：手札からUSEDへ。'+(godBonus?'追加1ダメージ':'ダメージ上限により追加ダメージなし'));
-       fxEvents.push({id:fxId(),type:'proc',actor:uid,title:'全知全能の神、弱そう',sub:godBonus?'追加1ダメージ！':'ダメージ上限により追加0'});
+       logs.push('( \u0027ω\u0027)ﾌｪｯ!?：手札からUSEDへ。'+(godBonus?'追加1ダメージ':'ダメージ上限により追加ダメージなし'));
+       fxEvents.push({id:fxId(),type:'proc',actor:uid,title:'( \u0027ω\u0027)ﾌｪｯ!?',sub:godBonus?'追加1ダメージ！':'ダメージ上限により追加0'});
      }
    }
    if(damage&&!patch.state){const actual=applyDamage(opponent,damage,{ignoreShield:false,ignoreCap:true,source:'カード攻撃'});if(idolHealingRequested>=3&&actual>0){const heal=Math.min(actual,idolHealingRequested);patch[side+'Life']=Math.min(ownEffects.maxLife||7,(patch[side+'Life']??game[side+'Life'])+(heal)*(ownEffects.healingDouble?2:1));logs.push('星色道産子アイドル：実際に与えた'+heal+'ダメージ分回復')}}
