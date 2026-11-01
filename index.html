@@ -442,9 +442,10 @@ const LIME_PINK_THEME='linear-gradient(135deg,#b5e15e 0%,#f6a4c6 100%)';
 // 新カードの固有色と既存報酬の色変更。
 for(const [name,,kind,color] of [['フラミンゴ左手の法則', '相手ターン終了時、そのターンにカード効果が使われていれば使用できる。次の自分のカード効果が2倍になる。', 'flamingo', 'linear-gradient(135deg,#fff 0%,#ff9a4b 50%,#ff8bc5 100%)'], ['むぎむぎｱﾀｯｸ', '相手に1ダメージ。睡眠中でも使用可能。自分の眠気・睡眠状態を解除する。', 'mugi', 'linear-gradient(135deg,#c6a8ed,#ff92c6)'], ['コールドスリープ', '自分を睡眠状態にする。睡眠状態の間、あらゆるダメージを受けない。', 'coldsleep', 'linear-gradient(135deg,#c6a8ed,#ff92c6)'], ['癒し系アイドル', 'このゲーム中のライフ上限を10にし、ライフ回復量を2倍にする。', 'healingidol', 'linear-gradient(135deg,#c6a8ed 0%,#16171e 50%,#ffe76b 100%)'], ['封印されし●●ゾディア', '手札が3枚以下なら使用可能：相手に1ダメージ。手札からUSEDに置かれた際、手札2枚を捨てれば追加1ダメージ。相手効果による移動で手札0枚ならさらに1ダメージ。', 'zodia', 'linear-gradient(135deg,#a4eb6a,#ff9ac8)'], ['ユー ロス！！', '3枚引き、手札1枚を山札の一番上に置く。その後残りの手札を全てUSEDへ送り、相手に1ダメージ。', 'youlose', 'linear-gradient(135deg,#a4eb6a,#ff9ac8)']]){const i=CARDS.findIndex(c=>c[0]===name);if(i>=0){CARD_THEMES[i]=color;CARD_TEXT_COLORS[i]='#172035'}}
 // 3色・3色カードの色はテーマとカードリストの両方で統一する。
+const LAVENDER_PINK_THEME='linear-gradient(135deg,#c6a8ed 0%,#ff92c6 100%)';
 const HEALING_THEME='linear-gradient(135deg,#c6a8ed 0%,#16171e 50%,#ffe76b 100%)';
 const FLAMINGO_THEME='linear-gradient(135deg,#ffffff 0%,#ff9a4b 50%,#ff8bc5 100%)';
-for(const [name,theme,fg] of [['癒し系アイドル',HEALING_THEME,'#ffffff'],['フラミンゴ左手の法則',FLAMINGO_THEME,'#172035']]){
+for(const [name,theme,fg] of [['癒し系アイドル',HEALING_THEME,'#ffffff'],['コールドスリープ',LAVENDER_PINK_THEME,'#172035'],['むぎむぎｱﾀｯｸ',LAVENDER_PINK_THEME,'#172035'],['フラミンゴ左手の法則',FLAMINGO_THEME,'#172035']]){
  const i=CARDS.findIndex(c=>c[0]===name);if(i>=0){CARD_THEMES[i]=theme;CARD_TEXT_COLORS[i]=fg}
 }
 for(const name of LIME_PINK_CARD_NAMES){const i=CARDS.findIndex(c=>c[0]===name);if(i>=0){CARD_THEMES[i]=LIME_PINK_THEME;CARD_TEXT_COLORS[i]='#172035'}}
@@ -1493,16 +1494,30 @@ function homeRefresh(){const p=progressState();const c=document.getElementById('
 function homeShow(){if(game&&!game.over&&!confirm('対戦を終了してホームに戻りますか？'))return;game=null;pending=null;lock=false;document.body.classList.add('home-active');document.getElementById('homeScreen').classList.remove('hidden');document.getElementById('builder').classList.add('hidden');document.getElementById('game').classList.add('hidden');homeRefresh();homeShopTab('wall');window.scrollTo(0,0)}
 function homeNavigate(dest){homeRefresh();if(dest==='home')return homeShow();if(dest==='shop'){document.getElementById('homeShopPanel').scrollIntoView({behavior:'smooth'});return}if(dest==='memo'){if(homeMemoOwned())homeReadMemo();else if(homeMemo2Owned())homeReadMemo2();else if(homeMemo3Owned())homeReadMemo3();else if(homeMemo4Owned())homeReadMemo4();else{homeShopTab('memo');document.getElementById('homeShopPanel').scrollIntoView({behavior:'smooth'})}return}if(dest==='beginner'){openProgressTab('beginner');return}if(dest==='daily'){openProgressTab('daily');return}if(dest==='settings'){openWallpaperPanel();return}if(dest==='streak'){document.body.classList.remove('home-active');document.getElementById('homeScreen').classList.add('hidden');showBuilder();startGauntlet();return}document.body.classList.remove('home-active');document.getElementById('homeScreen').classList.add('hidden');showBuilder();if(dest==='battle'){document.getElementById('builder').scrollIntoView();return}if(dest==='catalog'){document.getElementById('catalog').scrollIntoView();return}}
 function homeDrawGacha(){openRoyalGacha()}
-// 100コイン引き券：次回の有料商品購入で全券を消費。最低支払額は5コイン。
+// 100コイン引き券は購入時に使用枚数を選択。価格は5コイン未満にならない。
 function shopCouponCount(p){return Math.max(0,Math.floor(Number(p.shopCoupons)||0))}
-function shopDiscountPrice(price,p){return Math.max(5,price-100*shopCouponCount(p))}
-function shopPriceLabel(price,p){const count=shopCouponCount(p),discount=shopDiscountPrice(price,p);return count?price+' → '+discount+'コイン（🎟️ '+count+'枚適用）':price+'コイン'}
-function shopConfirmPurchase(name,price,p){const cost=shopDiscountPrice(price,p);if(p.coins<cost){alert('コインが足りません（必要：'+cost+'コイン）');return false}if(!confirm(name+'を'+shopPriceLabel(price,p)+'で購入しますか？'+(shopCouponCount(p)?'\n所持割引券をすべて消費します。':'')))return false;p.coins-=cost;p.shopCoupons=0;saveProgress(p);return true}
+function shopDiscountPrice(price,p,count=0){return Math.max(5,price-100*Math.max(0,Math.min(shopCouponCount(p),Math.floor(Number(count)||0))))}
+function shopPriceLabel(price,p){const owned=shopCouponCount(p);return owned?price+'コイン（🎟️ '+owned+'枚所持・購入時に使用枚数を選択）':price+'コイン'}
+function shopConfirmPurchase(name,price,p){
+ const owned=shopCouponCount(p);let used=0;
+ if(owned>0){
+  while(true){
+   const response=prompt(name+'：割引券を何枚使いますか？\n所持：'+owned+'枚（1枚100コイン引き、最低価格5コイン）\n0～'+owned+'の整数を入力してください。',String(Math.min(owned,Math.ceil((price-5)/100))));
+   if(response===null)return false;
+   if(/^\d+$/.test(response.trim())&&Number(response)<=owned){used=Number(response);break}
+   alert('0～'+owned+'の整数で入力してください。');
+  }
+ }
+ const cost=shopDiscountPrice(price,p,used);
+ if(p.coins<cost){alert('コインが足りません（必要：'+cost+'コイン）');return false}
+ if(!confirm(name+'を'+cost+'コインで購入しますか？'+(used?'\n割引券'+used+'枚を消費し、残り'+(owned-used)+'枚です。':'\n割引券は使用しません。')))return false;
+ p.coins-=cost;p.shopCoupons=owned-used;saveProgress(p);return true;
+}
 // カードの実物表示を使ったショップ交換：検索・価格帯フィルター・詳細確認付き。
 function renderCardExchange(root){
  const state=progressState();
  const title=document.createElement('h3');title.textContent='🃏 カードを見て選ぶ・未所持カード交換';root.append(title);
- const description=document.createElement('p');description.textContent='カードの色・名前・効果を見ながら交換できます。ガチャ限定300／連勝1～10戦300／11～20戦500／21～30戦1000コイン。割引券は自動適用、最低5コインです。';root.append(description);
+ const description=document.createElement('p');description.textContent='カードの色・名前・効果を見ながら交換できます。ガチャ限定300／連勝1～10戦300／11～20戦500／21～30戦1000コイン。割引券は購入時に使用枚数を選択できます（最低5コイン）。';root.append(description);
  const info=document.createElement('p');info.textContent='🪙 '+state.coins+'コイン　🎟️ '+shopCouponCount(state)+'枚　｜　'+[10,20,30].map(n=>n+'戦目デッキ：'+(specialDeckUnlocked(n)?'解放済み':'未解放')).join('・');root.append(info);
  const items=CARDS.map((c,i)=>({name:c[0],card:c,id:i,price:ROYAL_POOL.includes(c[0])?300:streakExchangeTier(c[0]),origin:ROYAL_POOL.includes(c[0])?'ガチャ限定':'連勝報酬'}))
  .filter(x=>x.price!==null&&(ROYAL_POOL.includes(x.name)?gachaCardLocked(x.card):!streakCardOwned(x.name)));
