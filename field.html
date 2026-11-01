@@ -1068,7 +1068,7 @@ function render(){ if(spectator){lastHandRenderKey=null;renderSpectator();return
   hand.forEach((name,i)=>{const b=document.createElement('button');b.type='button';b.textContent=(i+1)+'：'+name;b.style.background=i===whaleSelectionIndex?'#ffe4a0':'#e4efff';b.style.color='#142f55';b.setAttribute('aria-pressed',String(i===whaleSelectionIndex));b.onclick=()=>{whaleSelectionIndex=i;render()};whaleChoices.append(b)});
   if(!hand.length)$('whaleProgress').textContent+='／手札なし（破棄せず進行）';
  }
- $('whaleAnswer').disabled=matchFinished||busy||(mine.hand.length>0&&(whaleSelectionIndex<0||whaleSelectionIndex>=mine.hand.length));
+ $('whaleAnswer').disabled=matchFinished||busy||syncPending||(mine.hand.length>0&&(whaleSelectionIndex<0||whaleSelectionIndex>=mine.hand.length));
  $('whaleChoice').hidden=matchFinished||!(whaleWaiting&&whalePending.target===uid);
  const pending=game.pendingCard||null;const awaiting=pending&&pending.status==='waiting';
  const cancelReady=!!(awaiting&&pending.actor===uid&&Number.isFinite(pending.createdAt)&&Date.now()-pending.createdAt>=120000);
@@ -1128,7 +1128,7 @@ function updateLiveSyncStatus(){
  if(!navigator.onLine||connectionError){el.textContent='⚠ オフライン／再接続待ち';return}
  if(!game||(!spectator&&!mine)){el.textContent='🔄 対戦データを受信中…';return}
  if(busy){el.textContent='⏳ 操作をFirebaseに確定中…（重複操作しないでください）';return}
- if(!syncGameServer||(!spectator&&!syncMineServer)){el.textContent='🔄 更新確定待ち／端末キャッシュ表示中';return}
+ if(!syncRoomServer||!syncGameServer||(!spectator&&!syncMineServer)){el.textContent='🔄 サーバー確認中（操作を一時停止）';return}
  el.textContent='🟢 サーバー同期済み・変更をリアルタイム受信中';
 }
 function updateBoard(){
@@ -1257,9 +1257,9 @@ function watch(){
  clearTimeout(connectionRetryTimer);connectionRetryTimer=null;
  connectionError=false;syncRoomServer=false;syncGameServer=false;syncMineServer=false;updateConnectionAlert();
  pendingRecoverySeen='';pendingRecoveryReady=false;$('pendingRecovery').hidden=true;yakaPickerOpen=false;yakaSelected=[];peerPresenceInitialized=false;peerWasStale=false;clearTimeout(rejoinNoticeTimer);$('rejoinNotice').hidden=true;clearTimeout(autoDrawTimer);autoDrawTimer=null;autoDrawRetryAfter=0;previousLifeByRoom=null;cinePrevious=null;cineShownResult=null;$('cineResult').classList.remove('visible');unsubs.forEach(fn=>fn());unsubs=[];clearTimeout(integrityTimer);integrityIssues=[];integrityLastReported='';publicSyncKey='';room=game=mine=null;syncRoomServer=syncGameServer=syncMineServer=false;selected=[];render();updateLiveSyncStatus();
- unsubs.push(onSnapshot(refRoom(),s=>{if(generation!==watchGeneration)return;if(!s.metadata.fromCache){connectionRetryCount=0;connectionError=false;updateConnectionAlert();}room=s.exists()?s.data():null;syncRoomServer=!s.metadata.fromCache&&!s.metadata.hasPendingWrites;if(!room){$('status').textContent='ルームが見つかりません';return}side=spectator?null:room.host===uid?'host':room.guest===uid?'guest':null;$('status').textContent=`ルーム ${code} ／ ${spectator?'👁 観戦中':side==='host'?'ホスト':'ゲスト'}`;scheduleOnlinePaint();syncCinematic()},e=>subscriptionFailure(e,generation)));
- unsubs.push(onSnapshot(refGame(),s=>{if(generation!==watchGeneration)return;if(!s.metadata.fromCache){connectionRetryCount=0;connectionError=false;updateConnectionAlert();}game=s.exists()?s.data():null;syncGameServer=!s.metadata.fromCache&&!s.metadata.hasPendingWrites;scheduleOnlinePaint();scheduleIntegrityCheck();if(!spectator){checkPeerReturn();syncCinematic();mbSyncCounterLog();scheduleAutoDraw();}if(syncGameServer)mbSyncEvents();if(game&&syncGameServer){const events=(game.log||[]).filter(x=>x.startsWith('🗡️ 刺客の襲撃！'));if(!assassinLogReady){assassinSeen=new Set(events);assassinLogReady=true}else{for(const ev of events)if(!assassinSeen.has(ev)){showAssassinFx(ev.split(' | ')[0]);assassinSeen.add(ev)}}}},e=>subscriptionFailure(e,generation)));
- if(!spectator)unsubs.push(onSnapshot(refMine(),s=>{if(generation!==watchGeneration)return;if(!s.metadata.fromCache){connectionRetryCount=0;connectionError=false;updateConnectionAlert();}const nextMine=s.exists()?s.data():null;
+ unsubs.push(onSnapshot(refRoom(),{includeMetadataChanges:true},s=>{if(generation!==watchGeneration)return;if(!s.metadata.fromCache){connectionRetryCount=0;connectionError=false;updateConnectionAlert();}room=s.exists()?s.data():null;syncRoomServer=!s.metadata.fromCache&&!s.metadata.hasPendingWrites;if(!room){$('status').textContent='ルームが見つかりません';return}side=spectator?null:room.host===uid?'host':room.guest===uid?'guest':null;$('status').textContent=`ルーム ${code} ／ ${spectator?'👁 観戦中':side==='host'?'ホスト':'ゲスト'}`;scheduleOnlinePaint();syncCinematic()},e=>subscriptionFailure(e,generation)));
+ unsubs.push(onSnapshot(refGame(),{includeMetadataChanges:true},s=>{if(generation!==watchGeneration)return;if(!s.metadata.fromCache){connectionRetryCount=0;connectionError=false;updateConnectionAlert();}game=s.exists()?s.data():null;syncGameServer=!s.metadata.fromCache&&!s.metadata.hasPendingWrites;scheduleOnlinePaint();if(syncGameServer){scheduleIntegrityCheck();if(!spectator){checkPeerReturn();syncCinematic();mbSyncCounterLog();scheduleAutoDraw();}}if(syncGameServer)mbSyncEvents();if(game&&syncGameServer){const events=(game.log||[]).filter(x=>x.startsWith('🗡️ 刺客の襲撃！'));if(!assassinLogReady){assassinSeen=new Set(events);assassinLogReady=true}else{for(const ev of events)if(!assassinSeen.has(ev)){showAssassinFx(ev.split(' | ')[0]);assassinSeen.add(ev)}}}},e=>subscriptionFailure(e,generation)));
+ if(!spectator)unsubs.push(onSnapshot(refMine(),{includeMetadataChanges:true},s=>{if(generation!==watchGeneration)return;if(!s.metadata.fromCache){connectionRetryCount=0;connectionError=false;updateConnectionAlert();}const nextMine=s.exists()?s.data():null;
 const oldSelectedNames=(mine?.hand||[]).filter((_,i)=>selected.includes(i));
 mine=nextMine;syncMineServer=!s.metadata.fromCache&&!s.metadata.hasPendingWrites;
 if(oldSelectedNames.length){
@@ -1267,7 +1267,7 @@ if(oldSelectedNames.length){
  const consumed=new Set();selected=[];
  for(const name of oldSelectedNames){const index=remaining.findIndex((n,i)=>n===name&&!consumed.has(i));if(index>=0){consumed.add(index);selected.push(index)}}
 }
-scheduleOnlinePaint();scheduleAutoDraw();syncOwnPublicZones();scheduleIntegrityCheck();mbSyncEvents()},e=>subscriptionFailure(e,generation)));
+scheduleOnlinePaint();if(syncMineServer&&syncGameServer){scheduleAutoDraw();syncOwnPublicZones();scheduleIntegrityCheck();mbSyncEvents()}},e=>subscriptionFailure(e,generation)));
 }
 onAuthStateChanged(auth,u=>{if(u){uid=u.uid;$('auth').textContent='匿名ログイン済み';$('enter').disabled=false;$('spectate').disabled=false;const requested=new URLSearchParams(location.search).get('room');if(requested&&/^\d{6}$/.test(requested)&&!code){$('code').value=requested;$('enter').click()}}else{$('auth').textContent='ログイン待機';$('enter').disabled=true}});
 signInAnonymously(auth).catch(report);
