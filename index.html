@@ -441,6 +441,12 @@ const LIME_PINK_CARD_NAMES=['必殺ファン●ション','封印されし●●
 const LIME_PINK_THEME='linear-gradient(135deg,#b5e15e 0%,#f6a4c6 100%)';
 // 新カードの固有色と既存報酬の色変更。
 for(const [name,,kind,color] of [['フラミンゴ左手の法則', '相手ターン終了時、そのターンにカード効果が使われていれば使用できる。次の自分のカード効果が2倍になる。', 'flamingo', 'linear-gradient(135deg,#fff 0%,#ff9a4b 50%,#ff8bc5 100%)'], ['むぎむぎｱﾀｯｸ', '相手に1ダメージ。睡眠中でも使用可能。自分の眠気・睡眠状態を解除する。', 'mugi', 'linear-gradient(135deg,#c6a8ed,#ff92c6)'], ['コールドスリープ', '自分を睡眠状態にする。睡眠状態の間、あらゆるダメージを受けない。', 'coldsleep', 'linear-gradient(135deg,#c6a8ed,#ff92c6)'], ['癒し系アイドル', 'このゲーム中のライフ上限を10にし、ライフ回復量を2倍にする。', 'healingidol', 'linear-gradient(135deg,#c6a8ed 0%,#16171e 50%,#ffe76b 100%)'], ['封印されし●●ゾディア', '手札が3枚以下なら使用可能：相手に1ダメージ。手札からUSEDに置かれた際、手札2枚を捨てれば追加1ダメージ。相手効果による移動で手札0枚ならさらに1ダメージ。', 'zodia', 'linear-gradient(135deg,#a4eb6a,#ff9ac8)'], ['ユー ロス！！', '3枚引き、手札1枚を山札の一番上に置く。その後残りの手札を全てUSEDへ送り、相手に1ダメージ。', 'youlose', 'linear-gradient(135deg,#a4eb6a,#ff9ac8)']]){const i=CARDS.findIndex(c=>c[0]===name);if(i>=0){CARD_THEMES[i]=color;CARD_TEXT_COLORS[i]='#172035'}}
+// 3色・3色カードの色はテーマとカードリストの両方で統一する。
+const HEALING_THEME='linear-gradient(135deg,#c6a8ed 0%,#16171e 50%,#ffe76b 100%)';
+const FLAMINGO_THEME='linear-gradient(135deg,#ffffff 0%,#ff9a4b 50%,#ff8bc5 100%)';
+for(const [name,theme,fg] of [['癒し系アイドル',HEALING_THEME,'#ffffff'],['フラミンゴ左手の法則',FLAMINGO_THEME,'#172035']]){
+ const i=CARDS.findIndex(c=>c[0]===name);if(i>=0){CARD_THEMES[i]=theme;CARD_TEXT_COLORS[i]=fg}
+}
 for(const name of LIME_PINK_CARD_NAMES){const i=CARDS.findIndex(c=>c[0]===name);if(i>=0){CARD_THEMES[i]=LIME_PINK_THEME;CARD_TEXT_COLORS[i]='#172035'}}
 {const i=CARDS.findIndex(c=>c[0]==='はいちーず！！');if(i>=0){CARD_THEMES[i]='linear-gradient(135deg,#f5cb39,#399d62)';CARD_TEXT_COLORS[i]='#172035'}}
 // 怪異はカードの内部ID・効果を変えず、名前だけを一時的に変更する。
@@ -1492,29 +1498,58 @@ function shopCouponCount(p){return Math.max(0,Math.floor(Number(p.shopCoupons)||
 function shopDiscountPrice(price,p){return Math.max(5,price-100*shopCouponCount(p))}
 function shopPriceLabel(price,p){const count=shopCouponCount(p),discount=shopDiscountPrice(price,p);return count?price+' → '+discount+'コイン（🎟️ '+count+'枚適用）':price+'コイン'}
 function shopConfirmPurchase(name,price,p){const cost=shopDiscountPrice(price,p);if(p.coins<cost){alert('コインが足りません（必要：'+cost+'コイン）');return false}if(!confirm(name+'を'+shopPriceLabel(price,p)+'で購入しますか？'+(shopCouponCount(p)?'\n所持割引券をすべて消費します。':'')))return false;p.coins-=cost;p.shopCoupons=0;saveProgress(p);return true}
-// 未所持カード交換：ガチャ300／連勝報酬1～10戦300、11～20戦500、21～30戦1000。
+// カードの実物表示を使ったショップ交換：検索・価格帯フィルター・詳細確認付き。
 function renderCardExchange(root){
- const p=progressState(),title=document.createElement('h3');title.textContent='🃏 未所持カード交換';root.append(title);
- const desc=document.createElement('p');desc.textContent='ガチャ限定カード：300コイン／連勝1～10戦報酬：300コイン／11～20戦報酬：500コイン／21～30戦報酬：1000コイン。割引券使用可（最低5コイン）。10・20・30戦目それぞれの勝利報酬カードをすべて揃えると、対応する特別デッキが解放されます。';root.append(desc);
- const items=CARDS.map(c=>({name:c[0],card:c,price:ROYAL_POOL.includes(c[0])?300:streakExchangeTier(c[0])})).filter(x=>x.price!==null&&(ROYAL_POOL.includes(x.name)?gachaCardLocked(x.card):!streakCardOwned(x.name)));
- const balance=document.createElement('p');balance.textContent='所持コイン：'+p.coins+'枚　｜　割引券：'+shopCouponCount(p)+'枚';root.append(balance);
- const progress=document.createElement('p');progress.textContent=[10,20,30].map(n=>n+'戦目デッキ：'+(specialDeckUnlocked(n)?'解放済み':'未解放')).join(' ／ ');root.append(progress);
- if(!items.length){const done=document.createElement('p');done.textContent='交換できる未所持カードはありません。';root.append(done);return}
- const select=document.createElement('select');select.setAttribute('aria-label','交換するカード');
- for(const x of items){const opt=document.createElement('option');opt.value=x.name;opt.textContent=x.name+'｜'+x.price+'コイン（割引前）';select.append(opt)}
- select.style.cssText='display:block;max-width:100%;width:100%;padding:12px;margin:12px 0;background:#fff;color:#24170f;border-radius:8px';
- const btn=document.createElement('button');
- function updatePrice(){const chosen=items.find(x=>x.name===select.value);if(chosen)btn.textContent='🪙 '+shopPriceLabel(chosen.price,progressState())+'で交換'}
- select.addEventListener('change',updatePrice);updatePrice();
- btn.onclick=()=>{
-  const x=items.find(x=>x.name===select.value),latest=progressState();if(!x)return;
-  const stillLocked=ROYAL_POOL.includes(x.name)?gachaCardLocked(x.card):!streakCardOwned(x.name);
-  if(!stillLocked){alert('このカードは既に入手済みです。');root.replaceChildren();renderCardExchange(root);return}
-  if(!shopConfirmPurchase(x.name+'（カード交換）',x.price,latest))return;
-  if(ROYAL_POOL.includes(x.name)){latest.gachaCards=Array.isArray(latest.gachaCards)?latest.gachaCards:[];if(!latest.gachaCards.includes(x.name))latest.gachaCards.push(x.name);if(x.name==='ｱﾊﾊｯｽｩーｱﾊﾊﾊ(以下略)')latest.gachaOwned=true;saveProgress(latest)}
-  else{const purchased=new Set(streakPurchasedCards());purchased.add(x.name);localStorage.setItem(STREAK_EXCHANGE_KEY,JSON.stringify([...purchased]))}
-  root.replaceChildren();renderCardExchange(root);renderCatalog();showRewardFx('🃏 '+x.name,'カード交換完了！');
- };root.append(select,btn);
+ const state=progressState();
+ const title=document.createElement('h3');title.textContent='🃏 カードを見て選ぶ・未所持カード交換';root.append(title);
+ const description=document.createElement('p');description.textContent='カードの色・名前・効果を見ながら交換できます。ガチャ限定300／連勝1～10戦300／11～20戦500／21～30戦1000コイン。割引券は自動適用、最低5コインです。';root.append(description);
+ const info=document.createElement('p');info.textContent='🪙 '+state.coins+'コイン　🎟️ '+shopCouponCount(state)+'枚　｜　'+[10,20,30].map(n=>n+'戦目デッキ：'+(specialDeckUnlocked(n)?'解放済み':'未解放')).join('・');root.append(info);
+ const items=CARDS.map((c,i)=>({name:c[0],card:c,id:i,price:ROYAL_POOL.includes(c[0])?300:streakExchangeTier(c[0]),origin:ROYAL_POOL.includes(c[0])?'ガチャ限定':'連勝報酬'}))
+ .filter(x=>x.price!==null&&(ROYAL_POOL.includes(x.name)?gachaCardLocked(x.card):!streakCardOwned(x.name)));
+ if(!items.length){const done=document.createElement('p');done.textContent='現在、交換できる未所持カードはありません。';root.append(done);return}
+ const tools=document.createElement('div');tools.style.cssText='display:flex;flex-wrap:wrap;gap:9px;margin:12px 0';
+ const search=document.createElement('input');search.type='search';search.placeholder='🔎 カード名・効果で検索';search.setAttribute('aria-label','カード検索');search.style.cssText='flex:2;min-width:170px;padding:12px;border-radius:9px;background:white;color:#142038';
+ const filter=document.createElement('select');filter.setAttribute('aria-label','カードの価格帯');filter.style.cssText='flex:1;min-width:130px;padding:12px;border-radius:9px;background:white;color:#142038';
+ for(const [value,label] of [['all','すべての価格'],['300','300コイン'],['500','500コイン'],['1000','1000コイン']]){const o=document.createElement('option');o.value=value;o.textContent=label;filter.append(o)}
+ tools.append(search,filter);root.append(tools);
+ const count=document.createElement('p');root.append(count);
+ const grid=document.createElement('div');grid.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,205px),1fr));gap:13px;margin:12px 0 24px';root.append(grid);
+ function draw(){
+  grid.replaceChildren();const term=search.value.trim().toLowerCase(),price=filter.value;
+  const visible=items.filter(x=>(price==='all'||x.price===Number(price))&&[x.name,x.card[1],x.origin].some(v=>String(v).toLowerCase().includes(term)));
+  count.textContent='表示 '+visible.length+' / '+items.length+'種類（未所持のみ）';
+  if(!visible.length){const empty=document.createElement('p');empty.textContent='該当するカードはありません。';grid.append(empty);return}
+  for(const x of visible){
+   const wrap=document.createElement('article');wrap.style.cssText='border:2px solid #b9a2d8;border-radius:15px;padding:10px;background:#14243d;display:flex;flex-direction:column;gap:8px';
+   const face=document.createElement('div');face.className='card';setCardTheme(face,x.id);
+   face.style.cssText+=';width:100%;min-height:185px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;padding:13px;border-radius:12px;overflow-wrap:anywhere;white-space:normal';
+   const name=document.createElement('strong');name.textContent=x.name;name.style.cssText='font-size:1.05rem;line-height:1.35';
+   const effect=document.createElement('span');effect.textContent=x.card[1];effect.style.cssText='font-size:.82rem;line-height:1.5;display:block;margin-top:12px';
+   face.append(name,effect);
+   const source=document.createElement('div');source.textContent=x.origin+'・通常 '+x.price+'コイン';source.style.cssText='font-size:.84rem;color:#d9e4fa';
+   const button=document.createElement('button');button.textContent='🪙 '+shopPriceLabel(x.price,progressState())+'で交換';button.style.cssText='width:100%;padding:10px;white-space:normal';
+   button.onclick=()=>{
+    const current=progressState();
+    const locked=ROYAL_POOL.includes(x.name)?gachaCardLocked(x.card):!streakCardOwned(x.name);
+    if(!locked){alert('このカードはすでに入手済みです。');root.replaceChildren();renderCardExchange(root);return}
+    if(!shopConfirmPurchase(x.name+'（カード交換）',x.price,current))return;
+    if(ROYAL_POOL.includes(x.name)){
+      current.gachaCards=Array.isArray(current.gachaCards)?current.gachaCards:[];
+      if(!current.gachaCards.includes(x.name))current.gachaCards.push(x.name);
+      if(x.name==='ｱﾊﾊｯｽｩーｱﾊﾊﾊ(以下略)')current.gachaOwned=true;
+      saveProgress(current);
+    }else{
+      const owned=new Set(streakPurchasedCards());owned.add(x.name);
+      localStorage.setItem(STREAK_EXCHANGE_KEY,JSON.stringify([...owned]));
+    }
+    root.replaceChildren();renderCardExchange(root);
+    if(typeof renderCatalog==='function')renderCatalog();
+    showRewardFx('🃏 '+x.name,'カード交換完了！');
+   };
+   wrap.append(face,source,button);grid.append(wrap);
+  }
+ }
+ search.addEventListener('input',draw);filter.addEventListener('change',draw);draw();
 }
 function homeShopTab(tab){const root=document.getElementById('homeShopContent');if(!root)return;document.getElementById('homeTabWall').classList.toggle('selected',tab==='wall');document.getElementById('homeTabMemo').classList.toggle('selected',tab==='memo');document.getElementById('homeTabExchange').classList.toggle('selected',tab==='exchange');root.replaceChildren();homeRefresh();if(tab==='exchange'){renderCardExchange(root);return}if(tab==='memo'){const card=document.createElement('div');card.className='home-memo';const title=document.createElement('h3');title.textContent='📖 作成者メモ①：特殊能力の使い方';const desc=document.createElement('p');desc.textContent='D連打や付与能力、名前のついた特殊能力を図解で学べます。購入するとホームからいつでも読めます。';const btn=document.createElement('button');btn.textContent=homeMemoOwned()?'📖 メモを読む':'🪙 '+shopPriceLabel(30,progressState())+'で購入';btn.onclick=()=>{if(homeMemoOwned()){homeReadMemo();return}const p=progressState();if(!shopConfirmPurchase('作成者メモ①',30,p))return;localStorage.setItem(HOME_MEMO_KEY,'yes');homeRefresh();homeShopTab('memo');homeReadMemo()};card.append(title,desc,btn);root.append(card);
 const card2=document.createElement('div');card2.className='home-memo';
@@ -1603,7 +1638,7 @@ function homeReadMemo4(){
  const filter=document.createElement('input');filter.type='search';filter.placeholder='カード名・色・入手方法で検索';filter.style.cssText='width:100%;padding:12px;border-radius:9px;margin:8px 0;color:#142038;background:#fff';box.append(filter);
  const summary=document.createElement('p');box.append(summary);
  const list=document.createElement('div');box.append(list);
- const all=CARDS.map((c,i)=>({c,i,color:(['むぎむぎｱﾀｯｸ','コールドスリープ'].includes(c[0])?'薄紫 → ピンク':c[0]==='癒し系アイドル'?'薄紫 → 黒 → 黄色':LIME_PINK_CARD_NAMES.includes(c[0])?'黄緑 → ピンク':c[0]==='肉好きメロドック'?'赤（単色）':c[0]==='愛と魔法の歌'?'赤 → 白':catalogColorName(catalogColorKey(i))),bg:catalogColorKey(i),acquisition:memo4Acquisition(c)}));
+ const all=CARDS.map((c,i)=>({c,i,color:(['むぎむぎｱﾀｯｸ','コールドスリープ'].includes(c[0])?'薄紫 → ピンク':c[0]==='癒し系アイドル'?'薄紫 → 黒 → 黄色':c[0]==='フラミンゴ左手の法則'?'白 → オレンジ → ピンク':LIME_PINK_CARD_NAMES.includes(c[0])?'黄緑 → ピンク':c[0]==='肉好きメロドック'?'赤（単色）':c[0]==='愛と魔法の歌'?'赤 → 白':catalogColorName(catalogColorKey(i))),bg:catalogColorKey(i),acquisition:memo4Acquisition(c)}));
  const render=()=>{
   list.replaceChildren();const term=filter.value.trim().toLowerCase();const matches=all.filter(x=>[x.c[0],x.c[1],x.color,x.acquisition].some(v=>String(v).toLowerCase().includes(term)));
   summary.textContent='表示：'+matches.length+' / '+all.length+'種類';
