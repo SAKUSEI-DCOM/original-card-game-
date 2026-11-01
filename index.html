@@ -343,7 +343,7 @@ body.home-active main.wrap{max-width:none;padding:0}
 </div>
 <section class="home-panel" id="homeBeginnerPanel"><h3>🌟 初心者ミッション</h3><p id="homeBeginnerSummary">ミッションを確認して報酬を受け取ろう！</p><button onclick="homeNavigate('beginner')">ミッション・報酬を確認</button></section>
 <section class="home-panel" id="homeGachaPanel"><h3>🎰 カードガチャ</h3><p>コインを使ってカードを手に入れよう！</p><div class="home-gacha"><button onclick="openRoyalGacha()">🎰 1回ガチャ（10コイン）</button><button class="gold" onclick="openRoyalGacha()">ガチャの中身・所持カード</button></div></section>
-<section class="home-panel" id="homeShopPanel"><h3>🏪 ショップ</h3><p>背景や作成者メモをコインで購入できます。</p><div class="home-shop-tabs"><button id="homeTabWall" class="selected" onclick="homeShopTab('wall')">壁紙</button><button id="homeTabMemo" onclick="homeShopTab('memo')">作成者メモ</button></div><div id="homeShopContent"></div></section>
+<section class="home-panel" id="homeShopPanel"><h3>🏪 ショップ</h3><p>背景や作成者メモをコインで購入できます。</p><div class="home-shop-tabs"><button id="homeTabWall" class="selected" onclick="homeShopTab('wall')">壁紙</button><button id="homeTabExchange" onclick="homeShopTab('exchange')">カード交換</button> <button id="homeTabMemo" onclick="homeShopTab('memo')">作成者メモ</button></div><div id="homeShopContent"></div></section>
 </div></div></section>
 <section id="builder" class="hidden"><div class="panel"><h2>デッキ編集 <span id="deckCount" class="badge">0 / 20</span></h2><p class="muted">同名カードは最大3枚（小森アタックのみ上限20枚）。ﾌｪｯ!?は投入できますが通常使用できません。20枚にするとBOT対戦を開始できます。設定はこのブラウザに保存されます。</p><div class="controls"><button class="secondary" onclick="openTutorial()">はじめての方向けデモ</button><button onclick="saveDeck()">デッキを保存</button><button class="secondary" onclick="autoDeck()">おまかせ20枚</button><label style="display:inline-flex;align-items:center;gap:7px">サンプルデッキ <select id="sampleDeck" onchange="loadSampleDeck(this.value)"><option value="">選択してください</option><option value="KTワンショット">1 KTワンショット</option><option value="RKロック">2 RKロック</option><option value="PMループ">3 PMループ</option><option value="TNコントロール">4 TNコントロール</option><option value="KB連撃">5 KB連撃</option><option value="RVメタビート">6 RVメタビート</option><option value="NH妨害墓地ソ">7 NH妨害墓地ソ</option><option value="ES暴発">8 ES暴発</option><option value="ラッキーパンチ" id="luckyDeckOption">9 ？？？</option><option value="URサーチ" id="urDeckOption">10 ？？？</option><option value="推し活ビックマナ" id="bigManaOption">11 ？？？</option><option value="混合術式" id="mixedOption">12 ？？？</option><option value="D連撃" id="dComboOption">13 ？？？</option></select></label><button class="danger" onclick="clearDeck()">全解除</button></div><p id="sharedBotMessage" class="muted">BOT・オンライン共通デッキ（同じサイト・ブラウザで利用）</p><button class="secondary" onclick="botSyncShared()">オンラインで保存したデッキを読み込む</button><div id="catalog" class="grid"></div></div></section><section id="game" class="hidden bot-field">
 <div class="arena-board" id="arenaBoard">
@@ -386,7 +386,7 @@ NEW_CARD_COLOR.hakama='linear-gradient(135deg,#ff8dc8,#61a5ff)';NEW_CARD_COLOR.k
 function setCardTheme(element,index){if(NEW_CARD_COLOR[CARDS[index]?.[2]]){element.classList.add("card-themed");element.style.setProperty("--card-bg",NEW_CARD_COLOR[CARDS[index][2]]);element.style.setProperty("--card-fg","#fff");return;}if(isUR(index)){element.classList.add("card-themed");element.style.setProperty("--card-bg","linear-gradient(135deg,#ffe279 0%,#152e61 52%,#9a9da7 100%)");element.style.setProperty("--card-fg","#fff");return;}if(index<0||index>=CARD_THEMES.length)return;element.classList.add("card-themed");element.style.setProperty("--card-bg",CARD_THEMES[index]);element.style.setProperty("--card-fg",CARD_TEXT_COLORS[index]);}
 
 const CARDS=[
-['ﾌﾞﾝﾁｮｳｱﾀｯｸ','1ダメージ。手札の名前に「ﾌﾞﾝﾁｮｳ」を含むカードを1枚USEDにするとさらに1ダメージ','buncho'],['観測者の悪ノリ','山札から1枚引く','draw'],['うーんひらめいた！','山札から1枚引く','draw'],['オトモアタック','1ダメージ。その後、使用者だけが相手の山札の一番上を確認（非公開）','otomo'],['そう！高〇健！！','次の相手ターンのすべてのドローを封じる。自分USEDにSBFFが3枚なら永続','block'],['みなさん、いつまで寝てるの！！','自分のUSEDから最大3枚を山札に戻してシャッフル','recycle'],['必殺ファン●ション','手札がこのカードだけなら3ダメージ','special3'],['深夜の大人の勉強会','山札の上から3枚を確認し、好きな順に並べ替える','peek'],['小森アタック','相手に1ダメージ（デッキに4枚以上入れられる）','hit'],['星色の推し活','山札から1枚引く','draw'],['もち蔵アタック','1ダメージ。相手の次のターン終了まで、自分の山札は効果でUSEDに送られない','mochi'],['人手不足の魔導書','手札がこのカードを含め2枚以下なら、山札の「アタック」または「魔導書」を含むカード2枚をランダムに手札へ','search'],['お転婆お嬢様！！','相手の山札上2枚をUSEDへ','mill'],['究極拳巫女パンチ','使用前の手札が7枚以上なら5ダメージ','special5'],['ﾎｯﾄ₍₍(ง˘ω˘)ว⁾⁾ﾄﾞｯｸ','山札から1枚引く','draw'],['冷静龍声','D連打③。別の手札1枚をUSEDへ。その後山札上3枚から1枚を手札へ、残りをUSEDへ','select'],['まずはありがとう','2枚引いてから手札2枚をUSEDへ','drawdiscard'],['音バケ隊！！','USEDが5枚以上のとき使用可能。自分のライフを1回復','heal'],['しのみーらいぶ','ライフ1回復。その後、自分の山札の一番上をUSEDへ','shino'],['チトセニウム','使用前の手札が4枚以上なら使用可能。山札から2枚引く','chitose'],['全知全能の神、弱そう','ゲーム中初めて相手にダメージを与えたとき、手札からUSEDへ送って追加1ダメージ','god'],['見透かされるアホネー','相手の手札のカード名を3択で当てる','guess'],['やかましいわ','相手がカードを使用した際、このカード＋指定カード2枚（合計3枚）をUSEDに送って効果を無効化','counter'],['月民の隠れ家','D連打②。自分のUSEDから最大2枚選び、ランダムに1枚を山札へ、残りを手札へ','hideout'],['人を大切にできないやつは自分も大切にされない【名言】','1枚引いて1枚USEDへ。相手ターンに手札からUSEDへ送られると2枚引く','quote'],['ガチナイス','相手のライフが自分より多い、または1以下なら1ダメージ。その後USEDから手札へ戻る。相手ターン中にUSEDへ置かれた場合も手札へ戻る','nice'],
+['ﾌﾞﾝﾁｮｳｱﾀｯｸ','1ダメージ。手札の名前に「ﾌﾞﾝﾁｮｳ」を含むカードを1枚USEDにするとさらに1ダメージ','buncho'],['正論パンチ','山札から1枚引く','draw'],['うーんひらめいた！','山札から1枚引く','draw'],['オトモアタック','1ダメージ。その後、使用者だけが相手の山札の一番上を確認（非公開）','otomo'],['そう！高〇健！！','次の相手ターンのすべてのドローを封じる。自分USEDにSBFFが3枚なら永続','block'],['みなさん、いつまで寝てるの！！','自分のUSEDから最大3枚を山札に戻してシャッフル','recycle'],['必殺ファン●ション','手札がこのカードだけなら3ダメージ','special3'],['深夜の大人の勉強会','山札の上から3枚を確認し、好きな順に並べ替える','peek'],['小森アタック','相手に1ダメージ（デッキに4枚以上入れられる）','hit'],['星色の推し活','山札から1枚引く','draw'],['もち蔵アタック','1ダメージ。相手の次のターン終了まで、自分の山札は効果でUSEDに送られない','mochi'],['人手不足の魔導書','手札がこのカードを含め2枚以下なら、山札の「アタック」または「魔導書」を含むカード2枚をランダムに手札へ','search'],['お転婆お嬢様！！','相手の山札上2枚をUSEDへ','mill'],['究極拳巫女パンチ','使用前の手札が7枚以上なら5ダメージ','special5'],['ﾎｯﾄ₍₍(ง˘ω˘)ว⁾⁾ﾄﾞｯｸ','山札から1枚引く','draw'],['冷静龍声','D連打③。別の手札1枚をUSEDへ。その後山札上3枚から1枚を手札へ、残りをUSEDへ','select'],['まずはありがとう','2枚引いてから手札2枚をUSEDへ','drawdiscard'],['音バケ隊！！','USEDが5枚以上のとき使用可能。自分のライフを1回復','heal'],['しのみーらいぶ','ライフ1回復。その後、自分の山札の一番上をUSEDへ','shino'],['チトセニウム','使用前の手札が4枚以上なら使用可能。山札から2枚引く','chitose'],['( \u0027ω\u0027)ﾌｪｯ!?','ゲーム中初めて相手にダメージを与えたとき、手札からUSEDへ送って追加1ダメージ','god'],['見透かされるアホネー','相手の手札のカード名を3択で当てる','guess'],['やかましいわ','相手がカードを使用した際、このカード＋指定カード2枚（合計3枚）をUSEDに送って効果を無効化','counter'],['月民の隠れ家','D連打②。自分のUSEDから最大2枚選び、ランダムに1枚を山札へ、残りを手札へ','hideout'],['人を大切にできないやつは自分も大切にされない【名言】','1枚引いて1枚USEDへ。相手ターンに手札からUSEDへ送られると2枚引く','quote'],['ガチナイス','相手のライフが自分より多い、または1以下なら1ダメージ。その後USEDから手札へ戻る。相手ターン中にUSEDへ置かれた場合も手札へ戻る','nice'],
 ['腐白蛇','山札の一番上をUSEDへ。その後、このカードを除く自分のUSEDが3枚以下なら次の相手ターン中はダメージを受けない','snake'],
 ['眠気があってちゃんと良かったなぽ','自分のUSEDからランダムに最大2枚を山札に戻してシャッフル。山札の枚数差が10枚以上なら双方ライフ7に回復し、以後ゲーム終了まで1回のダメージは最大1','napo'],
 ['(･ω･三･ω･)ﾌﾝﾌﾝ','このゲーム中、以後自分がカードを使うたび30%で相手に1ダメージ','funfun'],
@@ -436,8 +436,12 @@ const CARDS=[
 ];
 // New gacha cards use the pink-to-blue gradient.
 for(let i=CARDS.length-5;i<CARDS.length;i++){CARD_THEMES[i]=CARDS[i][2]==='isekai'?'linear-gradient(135deg,#112b58,#08080c)':'linear-gradient(135deg,#ff8dc8,#61a5ff)';CARD_TEXT_COLORS[i]=CARDS[i][2]==='isekai'?'#fff':'#17203b'}
+// 黄緑→ピンク系統：3枚のカードは同一グラデーションと同一カテゴリで管理する。
+const LIME_PINK_CARD_NAMES=['必殺ファン●ション','封印されし●●ゾディア','ユー ロス！！'];
+const LIME_PINK_THEME='linear-gradient(135deg,#b5e15e 0%,#f6a4c6 100%)';
 // 新カードの固有色と既存報酬の色変更。
-for(const [name,,kind,color] of [['フラミンゴ左手の法則', '相手ターン終了時、そのターンにカード効果が使われていれば使用できる。次の自分のカード効果が2倍になる。', 'flamingo', 'linear-gradient[135deg,#fff 0%,#ff9a4b 50%,#ff8bc5 100%]'], ['むぎむぎｱﾀｯｸ', '相手に1ダメージ。睡眠中でも使用可能。自分の眠気・睡眠状態を解除する。', 'mugi', 'linear-gradient[135deg,#c6a8ed,#ff92c6]'], ['コールドスリープ', '自分を睡眠状態にする。睡眠状態の間、あらゆるダメージを受けない。', 'coldsleep', 'linear-gradient[135deg,#c6a8ed,#ff92c6]'], ['癒し系アイドル', 'このゲーム中のライフ上限を10にし、ライフ回復量を2倍にする。', 'healingidol', 'linear-gradient[135deg,#c6a8ed 0%,#16171e 50%,#ffe76b 100%]'], ['封印されし●●ゾディア', '手札が3枚以下なら使用可能：相手に1ダメージ。手札からUSEDに置かれた際、手札2枚を捨てれば追加1ダメージ。相手効果による移動で手札0枚ならさらに1ダメージ。', 'zodia', 'linear-gradient[135deg,#a4eb6a,#ff9ac8]'], ['ユー ロス！！', '3枚引き、手札1枚を山札の一番上に置く。その後残りの手札を全てUSEDへ送り、相手に1ダメージ。', 'youlose', 'linear-gradient[135deg,#a4eb6a,#ff9ac8]']]){const i=CARDS.findIndex(c=>c[0]===name);if(i>=0){CARD_THEMES[i]=color;CARD_TEXT_COLORS[i]='#172035'}}
+for(const [name,,kind,color] of [['フラミンゴ左手の法則', '相手ターン終了時、そのターンにカード効果が使われていれば使用できる。次の自分のカード効果が2倍になる。', 'flamingo', 'linear-gradient(135deg,#fff 0%,#ff9a4b 50%,#ff8bc5 100%)'], ['むぎむぎｱﾀｯｸ', '相手に1ダメージ。睡眠中でも使用可能。自分の眠気・睡眠状態を解除する。', 'mugi', 'linear-gradient(135deg,#c6a8ed,#ff92c6)'], ['コールドスリープ', '自分を睡眠状態にする。睡眠状態の間、あらゆるダメージを受けない。', 'coldsleep', 'linear-gradient(135deg,#c6a8ed,#ff92c6)'], ['癒し系アイドル', 'このゲーム中のライフ上限を10にし、ライフ回復量を2倍にする。', 'healingidol', 'linear-gradient(135deg,#c6a8ed 0%,#16171e 50%,#ffe76b 100%)'], ['封印されし●●ゾディア', '手札が3枚以下なら使用可能：相手に1ダメージ。手札からUSEDに置かれた際、手札2枚を捨てれば追加1ダメージ。相手効果による移動で手札0枚ならさらに1ダメージ。', 'zodia', 'linear-gradient(135deg,#a4eb6a,#ff9ac8)'], ['ユー ロス！！', '3枚引き、手札1枚を山札の一番上に置く。その後残りの手札を全てUSEDへ送り、相手に1ダメージ。', 'youlose', 'linear-gradient(135deg,#a4eb6a,#ff9ac8)']]){const i=CARDS.findIndex(c=>c[0]===name);if(i>=0){CARD_THEMES[i]=color;CARD_TEXT_COLORS[i]='#172035'}}
+for(const name of LIME_PINK_CARD_NAMES){const i=CARDS.findIndex(c=>c[0]===name);if(i>=0){CARD_THEMES[i]=LIME_PINK_THEME;CARD_TEXT_COLORS[i]='#172035'}}
 {const i=CARDS.findIndex(c=>c[0]==='はいちーず！！');if(i>=0){CARD_THEMES[i]='linear-gradient(135deg,#f5cb39,#399d62)';CARD_TEXT_COLORS[i]='#172035'}}
 // 怪異はカードの内部ID・効果を変えず、名前だけを一時的に変更する。
 function kaiiActive(){return !!game && game.players.some(p=>p.kaii>0)}
@@ -453,13 +457,13 @@ function sharedDeckValid(names,defs){if(!names||typeof names!=='object'||Array.i
 const SAMPLE_DECKS={
  "KTワンショット": {
   "チトセニウム": 3,
-  "全知全能の神、弱そう": 3,
+  "( \u0027ω\u0027)ﾌｪｯ!?": 3,
   "究極拳巫女パンチ": 3,
   "月民の隠れ家": 1,
   "導く北極星": 3,
   "行っちゃうの？…": 2,
   "うどん。": 2,
-  "観測者の悪ノリ": 2,
+  "正論パンチ": 2,
   "人を大切にできないやつは自分も大切にされない【名言】": 1
  },
  "RKロック": {
@@ -478,7 +482,7 @@ const SAMPLE_DECKS={
   "なんでもござれの藍白屋": 3,
   "ピカ犬": 3,
   "みなさん、いつまで寝てるの！！": 3,
-  "観測者の悪ノリ": 2,
+  "正論パンチ": 2,
   "そう！高〇健！！": 2,
   "しのみーらいぶ": 1
  },
@@ -499,7 +503,7 @@ const SAMPLE_DECKS={
   "月民の隠れ家": 2,
   "人手不足の魔導書": 1,
   "正論パンチ": 3,
-  "全知全能の神、弱そう": 2
+  "( \u0027ω\u0027)ﾌｪｯ!?": 2
  },
  "RVメタビート": {
   "江戸姫": 3,
@@ -538,9 +542,19 @@ const LUCKY_DECK={'デコバットの一撃':3,'電脳世界ハリケーン':3,'
 SAMPLE_DECKS['ラッキーパンチ']=LUCKY_DECK;
 const D_COMBO_DECK={'袴袴袴袴袴褌袴袴':3,'嬌言竜声':3,'ホエール•スクリーム':3,'ドラゴン•エール':3,'月民の隠れ家':3,'冷静龍声':3,'(･ω･三･ω･)ﾌﾝﾌﾝ':2};
 SAMPLE_DECKS['D連撃']=D_COMBO_DECK;
+SAMPLE_DECKS['黄緑ピンク・速攻必殺']={
+ '封印されし●●ゾディア':3,
+ 'ユー ロス！！':3,
+ '必殺ファン●ション':2,
+ 'ﾌﾞﾝﾁｮｳｱﾀｯｸ':3,
+ '( \u0027ω\u0027)ﾌｪｯ!?':3,
+ '正論パンチ':3,
+ 'ガチナイス':3
+};
+
 function dComboDeckUnlocked(){const p=progressState();const owned=new Set(Array.isArray(p.gachaCards)?p.gachaCards:[]);return Object.keys(D_COMBO_DECK).every(name=>{const card=CARDS.find(c=>c[0]===name);return card&&!gachaCardLocked(card)&&(!NEW_REWARDS.some(r=>r[0]===name)||NEW_REWARDS.some(r=>r[0]===name&&rewardUnlocked(r[1])))});}
 
-const BEGINNER_DECK={'ﾌﾞﾝﾁｮｳｱﾀｯｸ':3,'観測者の悪ノリ':3,'必殺ファン●ション':1,'小森アタック':5,'まずはありがとう':3,'チトセニウム':3,'人手不足の魔導書':2};
+const BEGINNER_DECK={'ﾌﾞﾝﾁｮｳｱﾀｯｸ':3,'正論パンチ':3,'必殺ファン●ション':1,'小森アタック':5,'まずはありがとう':3,'チトセニウム':3,'人手不足の魔導書':2};
 function sampleToCounts(name,forBot=false){if(name==='D連撃'&&!forBot&&!dComboDeckUnlocked())throw Error('D連撃の構成カードをすべて解放すると選べます');if(name==='ラッキーパンチ'&&!forBot&&!progressState().luckyUnlocked)throw Error('初心者チャレンジ①～⑦をすべて達成すると解放');if(name==='URサーチ'&&!forBot&&!specialDeckUnlocked(10))throw Error('10連勝で解放されます');if(['推し活ビックマナ','混合術式'].includes(name)&&!forBot&&!specialDeckUnlocked(name==='推し活ビックマナ'?20:30))throw Error('特別デッキ未解放');const result=Array(CARDS.length).fill(0);for(const [card,n] of Object.entries(SAMPLE_DECKS[name])){const i=CARDS.findIndex(c=>c[0]===card);if(i<0)throw Error('未登録カード: '+card);result[i]=n}if(result.reduce((a,b)=>a+b,0)!==20)throw Error('20枚になっていません: '+name);return result}
 function loadSampleDeck(name){
  if(!name)return;
@@ -553,7 +567,7 @@ function loadSampleDeck(name){
  try{counts=sampleToCounts(name);renderCatalog();botSaveShared();$('sharedBotMessage').textContent='サンプル「'+name+'」を共通デッキに設定しました'}catch(e){alert(e.message);$('sampleDeck').value=''}
 }
 let counts;try{counts=JSON.parse(localStorage.getItem('cardDeck')||'null')}catch(e){counts=null;console.warn('保存デッキを初期化',e)}if(!Array.isArray(counts)||counts.length>CARDS.length||counts.some(x=>!Number.isInteger(x)||x<0||x>20))counts=Array(CARDS.length).fill(0);else if(counts.length<CARDS.length)counts.push(...Array(CARDS.length-counts.length).fill(0));
-function botDeckDefs(){return CARDS.map(c=>({name:c[0],limit:c[2]==='hit'&&c[0]==='小森アタック'?20:c[2]==='toriko'?1:3,forbidden:['assassin','oru'].includes(c[2])||(['toriko','torikoDice','deco','hurricane'].includes(c[2])&&!progressState().unlocked.includes(c[0])||gachaCardLocked(c))||UR_TYPES.has(c[2])&&!urUnlocked()||NEW_REWARDS.some(r=>r[0]===c[0]&&!rewardUnlocked(r[1]))}));}
+function botDeckDefs(){return CARDS.map(c=>({name:c[0],limit:c[2]==='hit'&&c[0]==='小森アタック'?20:c[2]==='toriko'?1:3,forbidden:['assassin','oru'].includes(c[2])||(['toriko','torikoDice','deco','hurricane'].includes(c[2])&&!progressState().unlocked.includes(c[0])||gachaCardLocked(c))||UR_TYPES.has(c[2])&&!streakCardOwned(c[0])||NEW_REWARDS.some(r=>r[0]===c[0]&&!streakCardOwned(c[0])&&r[1]>0)}));}
 function botNamesFromCounts(arr){return Object.fromEntries(CARDS.map((c,i)=>[c[0],arr[i]]).filter(x=>x[1]>0));}
 function botCountsFromNames(names){if(!sharedDeckValid(names,botDeckDefs()))return null;return CARDS.map(c=>names[c[0]]||0);}
 function botSyncShared(){const v=sharedDeckRead();const next=botCountsFromNames(v?.cards);if(next){counts=next;localStorage.setItem('cardDeck',JSON.stringify(counts));renderCatalog();return true;}return false;}
@@ -592,6 +606,27 @@ function unlockUR(){
 }
 const $=id=>document.getElementById(id),sum=()=>counts.reduce((a,b)=>a+b,0),shuffle=a=>{for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const REWARD_KEY='ocbStreakRewardsV2';
+const STREAK_EXCHANGE_KEY='ocbStreakPurchasedCardsV1';
+function streakPurchasedCards(){try{const a=JSON.parse(localStorage.getItem(STREAK_EXCHANGE_KEY)||'[]');return Array.isArray(a)?a:[]}catch{return []}}
+function streakCardOwned(name){
+ const reward=NEW_REWARDS.find(r=>r[0]===name);
+ if(reward&&reward[1]>0)return rewardUnlocked(reward[1])||streakPurchasedCards().includes(name);
+ const c=CARDS.find(c=>c[0]===name);
+ return !!(c&&UR_TYPES.has(c[2])&&(urUnlocked()||streakPurchasedCards().includes(name)));
+}
+function streakExchangeTier(name){
+ const reward=NEW_REWARDS.find(r=>r[0]===name);
+ if(reward&&reward[1]>=11&&reward[1]<=20)return 500;
+ if(reward&&reward[1]>=21&&reward[1]<=30)return 1000;
+ const c=CARDS.find(c=>c[0]===name);
+ if(c&&UR_TYPES.has(c[2]))return 300;
+ return null;
+}
+function streakTierComplete(level){
+ const names=level===10?CARDS.filter(c=>UR_TYPES.has(c[2])).map(c=>c[0]):
+ NEW_REWARDS.filter(r=>r[1]===level).map(r=>r[0]);
+ return names.length>0&&names.every(streakCardOwned);
+}
 function rewardUnlocked(level){if(level===0)return true;try{return (JSON.parse(localStorage.getItem(REWARD_KEY)||'[]')).includes(level)}catch{return false}}
 function awardStreak(level){let list=[];try{list=JSON.parse(localStorage.getItem(REWARD_KEY)||'[]')}catch{}if(list.includes(level))return;list.push(level);localStorage.setItem(REWARD_KEY,JSON.stringify(list));renderCatalog();let names=NEW_REWARDS.filter(r=>r[1]===level).map(r=>r[0]);if(level===20)names.push('推し活ビックマナ');if(level===30)names.push('混合術式');if(names.length)showStreakReward(level,names)}
 function showStreakReward(level,names){setTimeout(()=>{let box=document.createElement('div');box.className='ur-reward';box.innerHTML='<div class="ur-reward-inner"><h2>🎉 '+level+'連勝達成！ 新しい報酬を獲得！</h2><div id="rewardNames"></div><button id="rewardClose">閉じる</button></div>';document.body.append(box);const target=box.querySelector('#rewardNames');for(let name of names){const id=CARDS.findIndex(c=>c[0]===name);if(id>=0){const item=document.createElement('div');item.className='card';setCardTheme(item,id);const title=document.createElement('strong');title.textContent='✨ '+name;const ability=document.createElement('small');ability.textContent=CARDS[id][1];item.append(title,ability);target.append(item)}else{const item=document.createElement('p');item.textContent='🎁 '+name+' デッキ解放';target.append(item)}}box.querySelector('#rewardClose').onclick=()=>box.remove()},750)}
@@ -601,7 +636,7 @@ function unlockedMilestones(){try{return JSON.parse(localStorage.getItem(STREAK_
 function unlockMilestone(wins){if(![10,20,30].includes(wins))return;const saved=new Set(unlockedMilestones());saved.add(wins);localStorage.setItem(STREAK_CHECKPOINT_KEY,JSON.stringify([...saved]));renderStreakStarts()}
 function renderStreakStarts(){const host=$('streakStartChoices');if(!host)return;host.replaceChildren();for(const n of [10,20,30]){if(!unlockedMilestones().includes(n))continue;const btn=document.createElement('button');btn.className='secondary';btn.textContent='🏆 '+(n+1)+'戦目から挑戦';btn.onclick=()=>startGauntletAt(n);host.appendChild(btn)}}
 function startGauntletAt(wins){if(!unlockedMilestones().includes(wins)){alert('先に'+wins+'戦目をクリアしてください');return}if(sum()!==20){alert('先に自分のデッキを20枚にしてください');return}gauntlet={index:wins,wins,playerCounts:counts.slice(),complete:false};startGame('gauntlet')}
-function specialDeckUnlocked(level){return level===10?urUnlocked()||unlockedMilestones().includes(10):rewardUnlocked(level)||unlockedMilestones().includes(level)}
+function specialDeckUnlocked(level){return (level===10?(urUnlocked()||unlockedMilestones().includes(10)):rewardUnlocked(level)||unlockedMilestones().includes(level))||streakTierComplete(level)}
 function catalogColorKey(i){return NEW_CARD_COLOR[CARDS[i]?.[2]]||(isUR(i)?'linear-gradient(135deg,#ffe279 0%,#152e61 52%,#9a9da7 100%)':CARD_THEMES[i]||'未設定')}
 const CATALOG_COLOR_NAMES={'#7842ba':'紫','#84512d':'茶色','#cc2936':'赤','#17171d':'黒','#b3b7c0':'灰色','#7145ac':'紫','#f1a2c7':'ピンク','#399d62':'緑','#84512d':'茶色','#cc2936':'赤'};
 function catalogColorName(bg){if(CATALOG_COLOR_NAMES[bg])return CATALOG_COLOR_NAMES[bg];const hexes=[...bg.matchAll(/#[0-9a-fA-F]{6}/g)].map(m=>m[0].toLowerCase());const palette={'#112b58':'紺','#08080c':'黒','#ff8dc8':'ピンク','#61a5ff':'青','#7842ba':'紫','#ff99ca':'ピンク','#08080d':'黒','#0d0d13':'黒','#6f2b9b':'紫','#c02c43':'赤','#cbb7f2':'薄紫','#f6c6a0':'桃橙','#13254f':'紺','#70d9f4':'水色','#155541':'深緑','#f1f4e9':'白','#b5e15e':'黄緑','#f6a4c6':'ピンク','#12345d':'紺','#ead7b4':'ベージュ','#16151b':'黒','#f5cb39':'黄色','#82dff6':'水色','#f7e27d':'黄色','#ab8bd9':'紫','#45206c':'紫','#17131e':'黒','#a5253d':'赤','#8e66c7':'紫','#f5f3ff':'白','#b52c49':'赤','#f4ce52':'黄色','#f9f9f2':'白','#fff0a8':'薄黄色','#1a1b24':'黒','#f6f6f8':'白','#c4b0e6':'薄紫','#1c172a':'黒','#f3ce59':'黄色','#8dd8f2':'水色','#ffffff':'白','#152d57':'紺','#11121c':'黒','#b1b4bc':'灰色','#25252c':'黒','#874ab7':'紫','#15131f':'黒','#cdb5f5':'薄紫','#f6a7d2':'ピンク','#ffe279':'黄色','#152e61':'紺','#9a9da7':'灰色','#152b55':'紺','#05070d':'黒','#7031b1':'紫','#090810':'黒','#b02b4d':'赤','#ff9dc8':'ピンク','#f8f8f8':'白','#92959c':'灰色','#08080b':'黒','#7846b5':'紫','#7bdaed':'水色','#f5cb39':'黄色','#399d62':'緑','#ffe066':'黄色','#ed8d20':'オレンジ','#ffc58c':'淡いオレンジ','#c42c34':'赤','#76d5ee':'水色','#b4ee67':'黄緑','#8ee3f8':'水色','#2879c9':'青','#b6f170':'黄緑','#eac45b':'金','#172a54':'紺','#10142e':'ネイビー','#f3a4d0':'ピンク','#d52b40':'赤','#8543b9':'紫','#cda6f2':'薄紫','#8050b8':'紫','#251b47':'濃紺','#8e49bc':'紫','#b72a4b':'赤','#162754':'紺','#f7a2c9':'ピンク','#c33b4e':'赤','#0d0d12':'黒','#3b8d61':'緑'};return hexes.map(x=>palette[x]||'その他の色').join(' → ')||'その他の色'}
@@ -609,9 +644,9 @@ const EXTRA_GACHA_CARDS=['うーんひらめいた！', '深夜の大人の勉�
 function gachaCardLocked(c){const types=['isekai','hakama','kyogen','whale','dragon','ahaha','flamingo','mugi','coldsleep','healingidol','zodia','youlose'];if(!types.includes(c[2])&&!EXTRA_GACHA_CARDS.includes(c[0]))return false;const p=progressState();return !(Array.isArray(p.gachaCards)?p.gachaCards:[]).includes(c[0])&&!(c[2]==='ahaha'&&p.gachaOwned)}
 function normalizeLockedDeckCounts(){if(!Array.isArray(counts))return;let changed=false;CARDS.forEach((c,i)=>{if(counts[i]>0&&gachaCardLocked(c)){counts[i]=0;changed=true}});if(changed){localStorage.setItem('cardDeck',JSON.stringify(counts));console.info('未入手のガチャ限定カードをデッキから除外しました')}}
 function renderCatalog(){for(const [id,level,name,num] of [['urDeckOption',10,'URサーチ',10],['bigManaOption',20,'推し活ビックマナ',11],['mixedOption',30,'混合術式',12]]){const opt=$(id);if(opt){opt.hidden=false;opt.disabled=false;opt.textContent=num+' '+(specialDeckUnlocked(level)?name:'？？？');}}const comboOpt=$('dComboOption');if(comboOpt){comboOpt.textContent=dComboDeckUnlocked()?'13 D連撃':'13 ？？？';}
-const luckyOpt=$('luckyDeckOption');if(luckyOpt)luckyOpt.textContent=progressState().luckyUnlocked?'9 ラッキーパンチ':'9 ？？？';$('deckCount').textContent=sum()+' / 20';const host=$('catalog');host.replaceChildren();const groups=new Map();CARDS.forEach((c,i)=>{if(c[2]==='assassin'||isUR(i)&&!urUnlocked()||['toriko','torikoDice','deco','hurricane'].includes(c[2])&&!progressState().unlocked.includes(c[0])||NEW_REWARDS.some(r=>r[0]===c[0]&&!rewardUnlocked(r[1]))||gachaCardLocked(c))return;const key=(c[0]==='肉好きメロドック'?'赤（単色）':c[0]==='愛と魔法の歌'?'赤 → 白':catalogColorName(catalogColorKey(i))).replace(/\s*→\s*/g," → ").trim();if(!groups.has(key))groups.set(key,{background:catalogColorKey(i),ids:[]});groups.get(key).ids.push(i)});for(const [color,group] of groups){const ids=group.ids;const section=document.createElement('section');section.className='catalog-color-group';const heading=document.createElement('h3');heading.className='catalog-color-title';const swatch=document.createElement('span');swatch.className='catalog-color-swatch';swatch.style.background=group.background;heading.append(swatch,document.createTextNode(color+'（'+ids.length+'種類）'));const grid=document.createElement('div');grid.className='grid';for(const i of ids){const c=CARDS[i];let e=document.createElement('div');e.className='card';setCardTheme(e,i);e.innerHTML='<strong></strong><small></small><div class="counter"><button class="secondary">−</button><b></b><button>＋</button></div>';e.querySelector('strong').textContent=c[0];e.querySelector('small').textContent=c[1];e.querySelector('b').textContent=counts[i];let bs=e.querySelectorAll('button');bs[0].disabled=counts[i]===0;bs[1].disabled=counts[i]===([8,47].includes(i)?20:CARDS[i][2]==='toriko'?1:3)||sum()>=20;bs[0].onclick=()=>{counts[i]--;renderCatalog()};bs[1].onclick=()=>{counts[i]++;renderCatalog()};grid.append(e)}section.append(heading,grid);host.append(section)}}
+const luckyOpt=$('luckyDeckOption');if(luckyOpt)luckyOpt.textContent=progressState().luckyUnlocked?'9 ラッキーパンチ':'9 ？？？';$('deckCount').textContent=sum()+' / 20';const host=$('catalog');host.replaceChildren();const groups=new Map();CARDS.forEach((c,i)=>{if(c[2]==='assassin'||isUR(i)&&!streakCardOwned(c[0])||['toriko','torikoDice','deco','hurricane'].includes(c[2])&&!progressState().unlocked.includes(c[0])||NEW_REWARDS.some(r=>r[0]===c[0]&&!streakCardOwned(c[0])&&r[1]>0)||gachaCardLocked(c))return;const key=(c[0]==='肉好きメロドック'?'赤（単色）':c[0]==='愛と魔法の歌'?'赤 → 白':catalogColorName(catalogColorKey(i))).replace(/\s*→\s*/g," → ").trim();if(!groups.has(key))groups.set(key,{background:catalogColorKey(i),ids:[]});groups.get(key).ids.push(i)});for(const [color,group] of groups){const ids=group.ids;const section=document.createElement('section');section.className='catalog-color-group';const heading=document.createElement('h3');heading.className='catalog-color-title';const swatch=document.createElement('span');swatch.className='catalog-color-swatch';swatch.style.background=group.background;heading.append(swatch,document.createTextNode(color+'（'+ids.length+'種類）'));const grid=document.createElement('div');grid.className='grid';for(const i of ids){const c=CARDS[i];let e=document.createElement('div');e.className='card';setCardTheme(e,i);e.innerHTML='<strong></strong><small></small><div class="counter"><button class="secondary">−</button><b></b><button>＋</button></div>';e.querySelector('strong').textContent=c[0];e.querySelector('small').textContent=c[1];e.querySelector('b').textContent=counts[i];let bs=e.querySelectorAll('button');bs[0].disabled=counts[i]===0;bs[1].disabled=counts[i]===([8,47].includes(i)?20:CARDS[i][2]==='toriko'?1:3)||sum()>=20;bs[0].onclick=()=>{counts[i]--;renderCatalog()};bs[1].onclick=()=>{counts[i]++;renderCatalog()};grid.append(e)}section.append(heading,grid);host.append(section)}}
 function saveDeck(){if(CARDS.some((c,i)=>counts[i]>0&&gachaCardLocked(c))){alert('未入手のガチャ限定カードが含まれています');return false}if(sum()!==20){alert('デッキを20枚にしてください');return false}if(!botSaveShared())return false;alert('BOT・オンライン共通デッキとして保存しました');return true}
-function autoDeck(){counts=Array(CARDS.length).fill(0);let ids=shuffle(Array.from({length:CARDS.length},(_,i)=>i).filter(i=>CARDS[i][2]!=='assassin'&&(!isUR(i)||urUnlocked())&&!NEW_REWARDS.some(r=>r[0]===CARDS[i][0]&&!rewardUnlocked(r[1]))&&!['toriko','torikoDice','deco','hurricane'].includes(CARDS[i][2])&&!gachaCardLocked(CARDS[i])));for(let n=0;n<20;n++)counts[ids[n%ids.length]]++;renderCatalog()}
+function autoDeck(){counts=Array(CARDS.length).fill(0);let ids=shuffle(Array.from({length:CARDS.length},(_,i)=>i).filter(i=>CARDS[i][2]!=='assassin'&&(!isUR(i)||streakCardOwned(CARDS[i][0]))&&!NEW_REWARDS.some(r=>r[0]===CARDS[i][0]&&!streakCardOwned(CARDS[i][0])&&r[1]>0)&&!['toriko','torikoDice','deco','hurricane'].includes(CARDS[i][2])&&!gachaCardLocked(CARDS[i])));for(let n=0;n<20;n++)counts[ids[n%ids.length]]++;renderCatalog()}
 function clearDeck(){counts.fill(0);renderCatalog()}
 function showBuilder(){hideBotMatchStart();if(game&&!game.over&&!confirm('対戦を終了してデッキ編集に戻りますか？'))return;game=null;pending=null;lock=false;$('builder').classList.remove('hidden');$('game').classList.add('hidden');botSyncShared();renderCatalog()}
 function makePlayer(deck){return{deck:shuffle(deck),hand:[],used:[],life:7,skip:0,protect:0,shieldNext:0,firstDealt:false,chances:{funfun:[],love:[],pikainu:[]},chanceBonus:0,extraTurns:0,permaBlock:false,blockTurns:0,edoTurns:0,permaEdo:false,chain:false,fairy:0,kaii:0,tomato:0,star:0,napTurns:[],handUsedCount:0,sleepy:false,asleep:false,parasite:false,ratePenalty:0,guard:0,damageLastOpponentTurn:0,damageThisOpponentTurn:0,microphone:false,invulnerable:false,shieldCounter:0,speed:0,buffs:[],externalCards:[],ahahaWard:null,maxLife:7,healingDouble:false,flamingoDouble:0,flamingoReady:false,specialOnce:{fe:{draw:false,damage:false},oru:{draw:false,damage:false}}}}
@@ -781,13 +816,13 @@ function damage(target,n,source=1-target){
   if(ix>=0){
    if(source===0){
     pending={type:'god',source,target};
-    showOptions('初めて相手にダメージを与えました。「全知全能の神、弱そう」をUSEDに送って追加1ダメージを与えますか？',[
+    showOptions('初めて相手にダメージを与えました。「( \u0027ω\u0027)ﾌｪｯ!?」をUSEDに送って追加1ダメージを与えますか？',[
      {label:'追加攻撃する',fn:()=>{let j=attacker.hand.indexOf(20);if(j>=0){moveHandUsed(source,j);pending=null;damage(target,1,source)}else pending=null;render()}},
      {label:'使わない',fn:()=>{pending=null;render()}}
     ]);
    }else{
     moveHandUsed(source,ix);
-    log('BOTが「全知全能の神、弱そう」をUSEDに送り追加攻撃');
+    log('BOTが「( \u0027ω\u0027)ﾌｪｯ!?」をUSEDに送り追加攻撃');
     damage(target,1,source);
    }
   }
@@ -1457,7 +1492,31 @@ function shopCouponCount(p){return Math.max(0,Math.floor(Number(p.shopCoupons)||
 function shopDiscountPrice(price,p){return Math.max(5,price-100*shopCouponCount(p))}
 function shopPriceLabel(price,p){const count=shopCouponCount(p),discount=shopDiscountPrice(price,p);return count?price+' → '+discount+'コイン（🎟️ '+count+'枚適用）':price+'コイン'}
 function shopConfirmPurchase(name,price,p){const cost=shopDiscountPrice(price,p);if(p.coins<cost){alert('コインが足りません（必要：'+cost+'コイン）');return false}if(!confirm(name+'を'+shopPriceLabel(price,p)+'で購入しますか？'+(shopCouponCount(p)?'\n所持割引券をすべて消費します。':'')))return false;p.coins-=cost;p.shopCoupons=0;saveProgress(p);return true}
-function homeShopTab(tab){const root=document.getElementById('homeShopContent');if(!root)return;document.getElementById('homeTabWall').classList.toggle('selected',tab==='wall');document.getElementById('homeTabMemo').classList.toggle('selected',tab==='memo');root.replaceChildren();homeRefresh();if(tab==='memo'){const card=document.createElement('div');card.className='home-memo';const title=document.createElement('h3');title.textContent='📖 作成者メモ①：特殊能力の使い方';const desc=document.createElement('p');desc.textContent='D連打や付与能力、名前のついた特殊能力を図解で学べます。購入するとホームからいつでも読めます。';const btn=document.createElement('button');btn.textContent=homeMemoOwned()?'📖 メモを読む':'🪙 '+shopPriceLabel(30,progressState())+'で購入';btn.onclick=()=>{if(homeMemoOwned()){homeReadMemo();return}const p=progressState();if(!shopConfirmPurchase('作成者メモ①',30,p))return;localStorage.setItem(HOME_MEMO_KEY,'yes');homeRefresh();homeShopTab('memo');homeReadMemo()};card.append(title,desc,btn);root.append(card);
+// 未所持カード交換：ガチャ300／連勝報酬1～10戦300、11～20戦500、21～30戦1000。
+function renderCardExchange(root){
+ const p=progressState(),title=document.createElement('h3');title.textContent='🃏 未所持カード交換';root.append(title);
+ const desc=document.createElement('p');desc.textContent='ガチャ限定カード：300コイン／連勝1～10戦報酬：300コイン／11～20戦報酬：500コイン／21～30戦報酬：1000コイン。割引券使用可（最低5コイン）。10・20・30戦目それぞれの勝利報酬カードをすべて揃えると、対応する特別デッキが解放されます。';root.append(desc);
+ const items=CARDS.map(c=>({name:c[0],card:c,price:ROYAL_POOL.includes(c[0])?300:streakExchangeTier(c[0])})).filter(x=>x.price!==null&&(ROYAL_POOL.includes(x.name)?gachaCardLocked(x.card):!streakCardOwned(x.name)));
+ const balance=document.createElement('p');balance.textContent='所持コイン：'+p.coins+'枚　｜　割引券：'+shopCouponCount(p)+'枚';root.append(balance);
+ const progress=document.createElement('p');progress.textContent=[10,20,30].map(n=>n+'戦目デッキ：'+(specialDeckUnlocked(n)?'解放済み':'未解放')).join(' ／ ');root.append(progress);
+ if(!items.length){const done=document.createElement('p');done.textContent='交換できる未所持カードはありません。';root.append(done);return}
+ const select=document.createElement('select');select.setAttribute('aria-label','交換するカード');
+ for(const x of items){const opt=document.createElement('option');opt.value=x.name;opt.textContent=x.name+'｜'+x.price+'コイン（割引前）';select.append(opt)}
+ select.style.cssText='display:block;max-width:100%;width:100%;padding:12px;margin:12px 0;background:#fff;color:#24170f;border-radius:8px';
+ const btn=document.createElement('button');
+ function updatePrice(){const chosen=items.find(x=>x.name===select.value);if(chosen)btn.textContent='🪙 '+shopPriceLabel(chosen.price,progressState())+'で交換'}
+ select.addEventListener('change',updatePrice);updatePrice();
+ btn.onclick=()=>{
+  const x=items.find(x=>x.name===select.value),latest=progressState();if(!x)return;
+  const stillLocked=ROYAL_POOL.includes(x.name)?gachaCardLocked(x.card):!streakCardOwned(x.name);
+  if(!stillLocked){alert('このカードは既に入手済みです。');root.replaceChildren();renderCardExchange(root);return}
+  if(!shopConfirmPurchase(x.name+'（カード交換）',x.price,latest))return;
+  if(ROYAL_POOL.includes(x.name)){latest.gachaCards=Array.isArray(latest.gachaCards)?latest.gachaCards:[];if(!latest.gachaCards.includes(x.name))latest.gachaCards.push(x.name);if(x.name==='ｱﾊﾊｯｽｩーｱﾊﾊﾊ(以下略)')latest.gachaOwned=true;saveProgress(latest)}
+  else{const purchased=new Set(streakPurchasedCards());purchased.add(x.name);localStorage.setItem(STREAK_EXCHANGE_KEY,JSON.stringify([...purchased]))}
+  root.replaceChildren();renderCardExchange(root);renderCatalog();showRewardFx('🃏 '+x.name,'カード交換完了！');
+ };root.append(select,btn);
+}
+function homeShopTab(tab){const root=document.getElementById('homeShopContent');if(!root)return;document.getElementById('homeTabWall').classList.toggle('selected',tab==='wall');document.getElementById('homeTabMemo').classList.toggle('selected',tab==='memo');document.getElementById('homeTabExchange').classList.toggle('selected',tab==='exchange');root.replaceChildren();homeRefresh();if(tab==='exchange'){renderCardExchange(root);return}if(tab==='memo'){const card=document.createElement('div');card.className='home-memo';const title=document.createElement('h3');title.textContent='📖 作成者メモ①：特殊能力の使い方';const desc=document.createElement('p');desc.textContent='D連打や付与能力、名前のついた特殊能力を図解で学べます。購入するとホームからいつでも読めます。';const btn=document.createElement('button');btn.textContent=homeMemoOwned()?'📖 メモを読む':'🪙 '+shopPriceLabel(30,progressState())+'で購入';btn.onclick=()=>{if(homeMemoOwned()){homeReadMemo();return}const p=progressState();if(!shopConfirmPurchase('作成者メモ①',30,p))return;localStorage.setItem(HOME_MEMO_KEY,'yes');homeRefresh();homeShopTab('memo');homeReadMemo()};card.append(title,desc,btn);root.append(card);
 const card2=document.createElement('div');card2.className='home-memo';
 const title2=document.createElement('h3');title2.textContent='📖 作成者メモ②：カードシナジー';
 const desc2=document.createElement('p');desc2.textContent='複数のカードを組み合わせて強みを生む「シナジー」を、具体例と図解で解説。';
@@ -1527,12 +1586,12 @@ function homeReadMemo3(){
 }
 function memo4Acquisition(card){
  const name=card[0],type=card[2];
- if(['isekai','hakama','kyogen','whale','dragon','ahaha'].includes(type)||EXTRA_GACHA_CARDS.includes(name))return 'ロイヤルガチャ（10コイン／回）';
+ if(['isekai','hakama','kyogen','whale','dragon','ahaha','flamingo','mugi','coldsleep','healingidol','zodia','youlose'].includes(type)||EXTRA_GACHA_CARDS.includes(name))return 'ロイヤルガチャ（10コイン／回）';
  if(type==='assassin')return '通常のデッキ選択不可／カード効果でゲーム中に追加';
  if(type==='oru')return '通常プレイ不可（デッキへの投入制限あり）';
- if(UR_TYPES.has(type))return '連勝チャレンジ10連勝：URサーチ解放';
+ if(UR_TYPES.has(type))return '連勝チャレンジ10連勝／ショップで300コイン交換';
  const reward=NEW_REWARDS.find(x=>x[0]===name);
- if(reward){if(reward[1]===0)return '初期追加カード（通常のカード一覧から使用可能）';return '連勝チャレンジ '+reward[1]+'連勝で解放'}
+ if(reward){if(reward[1]===0)return '初期追加カード（通常のカード一覧から使用可能）';return '連勝チャレンジ '+reward[1]+'連勝／ショップで'+(reward[1]<=20?500:1000)+'コイン交換'}
  if(['虜だｿﾞ～～','ガチャの虜','デコバットの一撃','電脳世界ハリケーン'].includes(name))return '初心者チャレンジの報酬／ラッキーパンチデッキ';
  return '通常カード（最初からカード一覧で使用可能）';
 }
@@ -1544,7 +1603,7 @@ function homeReadMemo4(){
  const filter=document.createElement('input');filter.type='search';filter.placeholder='カード名・色・入手方法で検索';filter.style.cssText='width:100%;padding:12px;border-radius:9px;margin:8px 0;color:#142038;background:#fff';box.append(filter);
  const summary=document.createElement('p');box.append(summary);
  const list=document.createElement('div');box.append(list);
- const all=CARDS.map((c,i)=>({c,i,color:(c[0]==='肉好きメロドック'?'赤（単色）':c[0]==='愛と魔法の歌'?'赤 → 白':catalogColorName(catalogColorKey(i))),bg:catalogColorKey(i),acquisition:memo4Acquisition(c)}));
+ const all=CARDS.map((c,i)=>({c,i,color:(['むぎむぎｱﾀｯｸ','コールドスリープ'].includes(c[0])?'薄紫 → ピンク':c[0]==='癒し系アイドル'?'薄紫 → 黒 → 黄色':LIME_PINK_CARD_NAMES.includes(c[0])?'黄緑 → ピンク':c[0]==='肉好きメロドック'?'赤（単色）':c[0]==='愛と魔法の歌'?'赤 → 白':catalogColorName(catalogColorKey(i))),bg:catalogColorKey(i),acquisition:memo4Acquisition(c)}));
  const render=()=>{
   list.replaceChildren();const term=filter.value.trim().toLowerCase();const matches=all.filter(x=>[x.c[0],x.c[1],x.color,x.acquisition].some(v=>String(v).toLowerCase().includes(term)));
   summary.textContent='表示：'+matches.length+' / '+all.length+'種類';
