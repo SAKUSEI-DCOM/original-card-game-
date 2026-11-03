@@ -15,7 +15,17 @@
 @media(prefers-reduced-motion:reduce){#resultOverlay.future-special-result,#resultOverlay.future-special-result *{animation:none!important}}
 
 
-/* イラストに頼らない図解型・作成者メモ */
+/* キャラクターを使わないイラスト・図解型の作成者メモ */
+/* 図解ヘルプ：実際に描画するSVGイラストと読みやすいカード */
+.vh-illustration{background:linear-gradient(135deg,#f3eeff,#f7fbff);border:2px solid #c4b1ef;border-radius:16px;padding:10px;margin-bottom:14px;box-shadow:0 5px 0 #e4dcfa}
+.vh-illustration svg{display:block;width:100%;height:auto;max-height:310px}
+.vh-illustration figcaption{font-weight:750;color:#42326f;text-align:center;font-size:13px;padding:5px}
+.vh-panel-inner{color:#242440}.vh-panel-inner strong{color:#5633a5}
+.vh-graphic-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:10px 0}
+.vh-graphic-item{background:#f3efff;border:1px solid #d6c7ff;border-radius:12px;padding:10px;text-align:center}
+.vh-graphic-item b{display:block;font-size:15px}.vh-graphic-item small{display:block;font-size:12px;margin-top:5px}
+@media(max-width:540px){.vh-illustration{padding:4px}.vh-illustration figcaption{font-size:11px}.vh-graphic-grid{grid-template-columns:1fr 1fr}}
+
 #visualHelp{position:fixed;inset:0;z-index:22000;background:#080b1bef;display:grid;place-items:center;padding:12px;color:#17203b;font-family:system-ui,'Yu Gothic',sans-serif}
 .vh-shell{width:min(1450px,99vw);height:min(900px,96vh);display:grid;grid-template-columns:260px minmax(0,1fr);background:#f7f6ff;border:3px solid #b892ff;border-radius:19px;overflow:hidden;box-shadow:0 22px 90px #000a}
 .vh-side{background:linear-gradient(165deg,#302551,#191a3d);color:white;padding:18px 12px;overflow:auto}
@@ -1719,7 +1729,7 @@ function homeReadMemo5(){
   '(･ω･三･ω･)ﾌﾝﾌﾝ：以後のカード使用ごとに30%で相手に1ダメージ。',
   '限界愛：以後のカード使用ごとに50%で山札の一番上を手札に加える。',
   'なんでもござれの藍白屋：確率系の効果を20ポイント強化（上限100%）。',
-  'コールドスリープ：睡眠状態になり、睡眠中はダメージを受けません。',
+  'コールドスリープ：睡眠状態になり、原則カードをプレイできず、ダメージを受けません。',
   'むぎむぎｱﾀｯｸ：睡眠中にも使用でき、自分の眠気・睡眠を回復します。',
   'フラミンゴ左手の法則：条件を満たすと次に使う自分のカード効果が2倍になります。',
   'ダメージ無効・ドロー禁止・眠気・睡眠・追加ターンなどは別々の状態です。個々のカード効果と対戦ログを優先してください。'
@@ -1743,7 +1753,7 @@ function homeReadMemo5(){
   const strategy=dragon?'D連打の連鎖を狙い、山札の順番を意識してカードを使いましょう。':
     damage>=3?'攻撃カードを優先し、相手ライフを早めに削りましょう。手札枚数の条件にも注意。':
     '手札とUSEDを管理し、キーカードの条件を満たしてから攻めましょう。';
-  add('🃏 デッキ攻略｜'+name,[strategy,'収録カード：'+detail,'まずはキーカードを確認し、相手の妨害や山札切れに備えて使う順番を調整してください。']);
+  add('🃏 デッキ攻略｜'+name,[DECK_STRATEGIES[name]||strategy,'収録カード：'+detail,'まずはキーカードを確認し、相手の妨害や山札切れに備えて使う順番を調整してください。']);
  }
 }
 function homeReadMemo6(){
@@ -1771,7 +1781,7 @@ function homeReadMemo6(){
  ]);
  add('✨ 付与状態と例外処理',[
   'D連打N：山札トップのD連打MがN未満の場合、そのカードを取り出して使用します。条件を満たせば連鎖します。',
-  '睡眠：コールドスリープなどで付与され、睡眠中はダメージ無効。むぎむぎｱﾀｯｸは睡眠中にも使用でき、眠気・睡眠を回復します。',
+  '睡眠：カードをプレイできない状態（むぎむぎｱﾀｯｸなど例外あり）。睡眠中はダメージ無効。むぎむぎｱﾀｯｸは睡眠中にも使用でき、眠気・睡眠を回復します。',
   '確率付与：(･ω･三･ω･)ﾌﾝﾌﾝ、限界愛などはカード使用のたびに確率判定が発生します。',
   'ダメージ無効、カード効果2倍、山札からの移動制限などは、それぞれ付与元カードの条件と終了タイミングに従います。',
   '刺客は山札に混ぜられる特殊カードです。混入方法や関連カードは作成者メモ⑤で確認できます。'
@@ -1938,18 +1948,41 @@ const vhPages=[
 function vhPanel(title,content,cls=''){return `<section class="vh-panel ${cls}"><h3>${title}</h3><div class="vh-panel-inner">${content}</div></section>`}
 function vhFlow(steps){return `<div class="vh-flow">${steps.map(([a,b,c])=>`<div class="vh-step"><b>${a}</b><span class="vh-symbol">${b}</span><p>${c}</p></div>`).join('')}</div>`}
 function vhEsc(t){return String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function vhDecks(){return Object.entries(SAMPLE_DECKS).map(([name,cards])=>vhPanel('🃏 '+vhEsc(name),`<p>${Object.entries(cards).map(([n,q])=>vhEsc(n)+' ×'+q).join(' ／ ')}</p><p class="vh-note">カードの効果と使用条件を確認し、手札・USED・山札の動きを意識して戦おう。</p>`)).join('')}
+const DECK_STRATEGIES={"KTワンショット": "「チトセニウム」「導く北極星」で手札を整え、「究極拳巫女パンチ」の大ダメージを狙う。", "RKロック": "【妨害→反撃型】①「やかましいわ」で相手のカード効果を無効化する（無効化には手札をUSEDへ送るコストが必要）。②「まずはありがとう」などで相手の行動を妨げ、相手が動きにくい間に攻める。③「もち蔵アタック」で1ダメージを与える。ただし使用後は次の相手ターン終了まで、自分の山札を効果でUSEDへ送れない点に注意。④「ガチナイス」は相手ライフが自分より多い、または相手ライフが1以下のときに1ダメージを与え、USEDから手札へ戻せる。条件を確認して繰り返し攻める。", "PMループ": "「(･ω･三･ω･)ﾌﾝﾌﾝ」の追加ダメージと「限界愛」の手札補充を、「なんでもござれの藍白屋」で強化する。", "TNコントロール": "「お命頂戴します☪︎*｡꙳」「声殺夜奪」で刺客を混入し、「うんコンボ・・・・？」で刺客を増やして相手の山札を妨害する。", "KB連撃": "「ﾌﾞﾝﾁｮｳｱﾀｯｸ」と「窓を破るﾌﾞﾝﾁｮｳ」などの攻撃札を重ね、「トマト倍々発生」「怪異」で連撃を狙う。", "RVメタビート": "「江戸姫」「SBFF」で相手の行動を制限し、「もち蔵アタック」「正論パンチ」でライフを削る。", "NH妨害墓地ソ": "「見透かされるアホネー」「お転婆お嬢様！！」で妨害し、「文化の勝利」「春風と木音」などのUSED関連効果を活かす。", "ES暴発": "「行っちゃうの？…」で自分のライフを減らしてドローし、「ハートのチェーン」でその自傷に反応して相手へダメージを与える。「企画破壊」の自傷2ダメージも「ハートのチェーン」と組み合わせ、相手の効果を無効化しながら反撃する。", "URサーチ": "URカードのサーチ・再利用を軸に、必要なカードを集めてから攻める。", "推し活ビックマナ": "「(･ω･三･ω･)ﾌﾝﾌﾝ」＋「なんでもござれの藍白屋」の確率ダメージ強化と、「星色道産子アイドル」「夢読」などを組み合わせる。", "混合術式": "「魔法の図書館」「人手不足の魔導書」で手札を補い、「異世界猫の陰陽術」「魔術絵・オルカニス」などの術式をつなぐ。", "ラッキーパンチ": "【条件達成で削る＋運を味方につけるデッキ】①「虜だｿﾞ～～」は対戦開始時に自動設置される特殊カード。自分の手札が5枚以上、自分のUSEDが5枚以上、自分のライフが3以下、相手の手札が0枚という4条件を満たすたび、それぞれ初回に相手へ1ダメージを与える（各条件は1回のみ）。②「電脳世界ハリケーン」はランダムな枚数をドローし、手札5枚以上の条件を狙いやすくする。ただし山札切れに注意。③「デコバットの一撃」はランダムなダメージで大きな一撃を狙う。④「行っちゃうの？…」で手札を補充して条件達成と攻撃の準備を進める。⑤「ガチャの虜」はサイコロの目で効果が変わるので、良い結果を引いたら次の攻撃につなげる。", "D連撃": "「月民の隠れ家」「冷静龍声」のD連打を起点に、「袴袴袴袴袴褌袴袴」「ホエール•スクリーム」などへ連鎖させる。", "黄緑ピンク・速攻必殺": "「ユー ロス！！」で手札をUSEDへ送り「封印されし●●ゾディア」の追加効果を狙う。「必殺ファン●ション」は手札がそれ1枚のときに3ダメージ。"};
+function vhDecks(){return Object.entries(SAMPLE_DECKS).map(([name,cards])=>vhPanel('🃏 '+vhEsc(name),`<p class="vh-note"><strong>主な組み合わせ：</strong>${vhEsc(DECK_STRATEGIES[name]||'カードの効果を組み合わせて戦います。')}</p><p><strong>デッキ構成：</strong>${Object.entries(cards).map(([n,q])=>vhEsc(n)+' ×'+q).join(' ／ ')}</p>`)).join('')}
+// CSSとSVGで描くヘルプ用のオリジナル図。画像ファイル不要でオフラインでも表示。
+function vhGraphic(i){
+ const titles=['ゲームの全体像','1ターンの進め方','カードの移動とゾーン','付与状態の仕組み','刺客の混入','処理と条件の確認','デッキの組み立て','オンライン対戦の流れ'];
+ const captions=['ライフ7からスタート。相手のライフを0にすると勝利','ドロー後、行動を選んで相手のターンへ','山札・手札・USEDはカード効果で行き来します','状態によって発動条件・継続時間が異なります','刺客は相手の山札に混入する特殊カード','条件判定と効果処理を順番に確認','役割の異なるカードを組み合わせよう','6桁の部屋コードで2人が同じ対戦に参加'];
+ const palettes=[['#d9ccff','#6b49d5'],['#d3e6ff','#336fe1'],['#d8f8e9','#189f73'],['#f3ddff','#a456d1'],['#ffe0e7','#d44875'],['#ffe7c9','#d88a2a'],['#d7f0ff','#2f89d0'],['#e2e0ff','#7355d8']];
+ const [p,a]=palettes[i]||palettes[0];
+ const rect=(x,y,w,h,fill,stroke=a,r=15)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${fill}" stroke="${stroke}" stroke-width="3"/>`;
+ const label=(x,y,t,size=22,color='#29234b')=>`<text x="${x}" y="${y}" fill="${color}" font-family="system-ui, sans-serif" font-weight="800" font-size="${size}" text-anchor="middle">${t}</text>`;
+ const arrow=(x,y)=>`<path d="M${x} ${y} h46 m-15 -12 l15 12 -15 12" fill="none" stroke="#6851aa" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`;
+ const card=(x,y,fill='#c9b3ff')=>`${rect(x,y,63,91,fill,'#42356c',7)}${label(x+31,y+52,'✦',36,'#ffffff')}`;
+ const heart=(x,y)=>`<path d="M${x} ${y+10} C${x-20} ${y-12},${x-43} ${y+15},${x} ${y+43} C${x+43} ${y+15},${x+20} ${y-12},${x} ${y+10}Z" fill="#f45299" stroke="#ad2771" stroke-width="3"/>`;
+ let art='';
+ if(i===0){art=card(92,64)+card(116,53)+card(140,42)+arrow(263,100)+heart(395,65)+heart(455,65)+heart(515,65)+label(457,155,'ライフ 7 → 0',26)+label(162,183,'20枚デッキ',22)}
+ if(i===1){const cols=[['① ドロー','#cfe1ff','山札 → 手札'],['② 行動','#ffd5eb','カード / 攻撃'],['③ 処理','#ffe4c9','効果を適用'],['④ 終了','#e4d4ff','相手へ交代']];art=cols.map(([t,c,d],j)=>{let x=17+j*173;return rect(x,37,157,150,c,a,13)+label(x+78,78,t,22)+label(x+78,130,['🂠','✦','★','↻'][j],43,a)+label(x+78,163,d,16)}).join('')}
+ if(i===2){art=rect(22,45,194,141,'#d5e7ff')+rect(264,45,194,141,'#d6f9e6')+rect(506,45,194,141,'#e9d8ff')+label(119,81,'山札',25)+card(90,92)+label(361,81,'手札',25)+card(330,92,'#a3e9d0')+label(603,81,'USED',25)+card(572,92,'#ad99da')+arrow(218,111)+arrow(460,111)}
+ if(i===3){art=rect(35,43,190,145,'#e9e0ff')+rect(266,43,190,145,'#e3f4ff')+rect(497,43,190,145,'#e6f8e9')+label(130,84,'付与',28)+label(130,132,'状態がつく',19)+label(361,84,'条件判定',26)+label(361,132,'確率・ターン',19)+label(592,84,'効果発動',26)+label(592,132,'ダメージ等',19)+arrow(219,111)+arrow(451,111)}
+ if(i===4){art=rect(32,38,215,151,'#e6edff')+rect(472,38,215,151,'#ffe0eb')+label(140,81,'自分のカード',24)+card(110,95)+label(578,81,'相手の山札',24)+card(550,95,'#f17fae')+arrow(304,115)+label(360,88,'刺客を',21)+label(360,146,'混入',24)}
+ if(i===5){art=rect(25,42,204,147,'#dceaff')+rect(257,42,204,147,'#fff0d7')+rect(489,42,204,147,'#e0f7e9')+label(127,83,'使用条件',25)+label(127,135,'満たす？',24)+label(359,83,'効果処理',25)+label(359,135,'順番に',24)+label(591,83,'結果',25)+label(591,135,'USED等へ',22)+arrow(225,115)+arrow(457,115)}
+ if(i===6){art=card(95,70,'#a7d5ff')+card(175,70,'#ffc1d8')+card(255,70,'#c4e7ad')+arrow(365,115)+rect(458,55,225,125,'#e7dbff')+label(570,99,'20枚の',27)+label(570,143,'デッキ',30)}
+ if(i===7){art=rect(20,49,203,135,'#dcecff')+rect(263,49,203,135,'#e4d8ff')+rect(506,49,203,135,'#dcf7e8')+label(122,94,'部屋を作る',24)+label(122,144,'6桁コード',22)+label(365,94,'コード入力',24)+label(365,144,'相手が参加',20)+label(607,94,'準備完了',24)+label(607,144,'対戦開始',22)+arrow(216,115)+arrow(460,115)}
+ return `<figure class="vh-illustration"><svg viewBox="0 0 730 225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${titles[i]}の図解">${rect(4,4,722,217,'#ffffff','#ddd2ff',17)}${art}</svg><figcaption>${captions[i]}</figcaption></figure>`;
+}
 function vhPageHTML(i){switch(i){
 case 0:return vhPanel('🏁 ゲームの概要','<p>20枚のデッキで戦う2人対戦カードゲームです。カードの効果を組み合わせ、相手のライフを0にすると勝利します。</p><p>先攻・後攻はランダムで決定します。</p>','span2')+vhPanel('💗 ライフの見方','<div class="vh-hearts">♥♥♥♥♥♥♥</div><p>開始時はライフ7。相手のライフを0以下にすると勝利です。</p>')+vhPanel('📚 デッキ','<p>デッキは20枚。同名カードは原則3枚までです。</p>')+vhPanel('🃏 まず覚える3つ','<p><span class="vh-tag">山札</span>引く前のカード</p><p><span class="vh-tag">手札</span>使えるカード</p><p><span class="vh-tag">USED</span>使ったカードなどの置き場</p>','span2');
 case 1:return vhPanel('🚩 基本ルール','<ul><li>デッキ20枚・同名カードは原則3枚まで</li><li>初期ライフ7、初期手札2枚</li><li>相手ライフを0にすると勝利、山札切れは敗北</li><li>先攻1ターン目はドローなし</li></ul>','span2')+vhPanel('💗 ライフの変化','<div class="vh-hearts">♥♥♥♥♥♥♥</div><p>ライフ7 → 0 で敗北</p>')+vhPanel('🔁 1ターンの流れ',vhFlow([['① ドロー','🂠','山札から1枚引く（先攻初回を除く）'],['② 行動','🃏','カードを使う・USED攻撃・何もしない、から選ぶ'],['③ 効果の処理','✨','カード効果や条件を順番に処理'],['④ 終了','↻','ターンを相手に渡す']]),'wide')+vhPanel('💡 重要なポイント','<p>通常の行動は1ターンに1回。D連打などによる追加使用は、カード効果として処理される場合があります。</p><p>USED攻撃の必要枚数やダメージは実際の対戦画面の表示を確認してください。</p>','span2')+vhPanel('🗺️ 画面の見方','<p>上側が相手、下側が自分。ライフ・山札・手札・USEDを確認してから行動しましょう。</p>');
 case 2:return vhPanel('🗺️ ゾーンの説明','<div class="vh-zones"><div class="vh-zone"><strong>🂠 山札</strong>これから引くカード</div><div class="vh-zone"><strong>🃏 手札</strong>使えるカード</div><div class="vh-zone"><strong>▤ USED</strong>使用・破棄したカード</div></div>','wide')+vhPanel('➡️ カードの移動',vhFlow([['山札','🂠','ドローで手札へ'],['手札','🃏','条件を満たして使用'],['効果','✨','ダメージ・回復・移動など'],['USED','▤','使用後の置き場']]),'wide')+vhPanel('🎨 カードの見方','<div class="vh-card"><span>カード名</span><span>✦ 効果 ✦</span><small>効果の説明文</small></div>')+vhPanel('🔎 カードの説明','<p>カード名：カードを区別する名前。</p><p>背景色：カードの系統や色分け。</p><p>効果文：使用条件・処理・継続効果など。</p><p>手札やUSEDに移動したときに追加で発動するカードもあります。</p>','span2');
-case 3:return vhPanel('✨ 付与状態・継続効果','<p><span class="vh-tag">睡眠</span> コールドスリープで付与。睡眠中はダメージ無効。</p><p><span class="vh-tag">眠気</span> むぎむぎｱﾀｯｸで回復できる状態。</p><p><span class="vh-tag">防御</span> 指定された期間や条件でダメージを防ぎます。</p><p><span class="vh-tag">D連打N</span> 山札トップのD連打MがN未満なら、そのカードを使用。</p><p><span class="vh-tag">確率付与</span> カード使用ごとに一定確率で効果が発動。</p><p><span class="vh-tag">効果2倍</span> 条件を満たした次のカード効果を強化。</p>','wide')+vhPanel('🐉 D連打の例',vhFlow([['使用','🐉','D連打④を使う'],['確認','🂠','山札トップがD連打③'],['連鎖','✨','条件を満たし使用'],['移動','▤','使ったカードはUSEDへ']]),'wide')+vhPanel('🎲 確率系','<p>(･ω･三･ω･)ﾌﾝﾌﾝ：カード使用時30%で相手に1ダメージ。</p><p>限界愛：カード使用時50%で山札トップを手札へ。</p><p>藍白屋：確率を20ポイント強化（最大100%）。</p>','span2')+vhPanel('🛡️ 防御と解除','<p>睡眠中のダメージ無効と、通常の防御効果は別々の仕組みです。</p><p>効果の終了条件は付与元カードによって異なります。</p>');
+case 3:return vhPanel('✨ 付与状態・継続効果','<p><span class="vh-tag">睡眠</span> カードのプレイができない状態（むぎむぎｱﾀｯｸなど例外あり）。睡眠中はダメージ無効。</p><p><span class="vh-tag">眠気</span> 睡眠に入る前の状態。むぎむぎｱﾀｯｸで解除できる。</p><p><span class="vh-tag">防御</span> 指定された期間や条件でダメージを防ぎます。</p><p><span class="vh-tag">D連打N</span> 山札トップのD連打MがN未満なら、そのカードを使用。</p><p><span class="vh-tag">確率付与</span> カード使用ごとに一定確率で効果が発動。</p><p><span class="vh-tag">効果2倍</span> 条件を満たした次のカード効果を強化。</p>','wide')+vhPanel('🐉 D連打の例',vhFlow([['使用','🐉','D連打④を使う'],['確認','🂠','山札トップがD連打③'],['連鎖','✨','条件を満たし使用'],['移動','▤','使ったカードはUSEDへ']]),'wide')+vhPanel('🎲 確率系','<p>(･ω･三･ω･)ﾌﾝﾌﾝ：カード使用時30%で相手に1ダメージ。</p><p>限界愛：カード使用時50%で山札トップを手札へ。</p><p>藍白屋：確率を20ポイント強化（最大100%）。</p>','span2')+vhPanel('🛡️ 防御と解除','<p>睡眠中のダメージ無効と、通常の防御効果は別々の仕組みです。</p><p>効果の終了条件は付与元カードによって異なります。</p>');
 case 4:return vhPanel('💀 刺客の仕組み','<p>「刺客」は相手の山札へ混入する特殊なカードです。通常のデッキに入れるカードとは異なります。</p><p>ドロー時などの処理条件は、関連カードの効果文と対戦ログで確認してください。</p>','span2')+vhPanel('🔀 混入のイメージ','<div class="vh-zones"><div class="vh-zone">相手の山札</div><div class="vh-zone">＋ 刺客</div><div class="vh-zone">シャッフル</div></div>')+vhPanel('🃏 関連カード','<p>「お命頂戴します☪︎*｡꙳」：相手の山札に刺客2枚を追加。</p><p>「声殺夜奪」：手札を除外し刺客を混入。</p><p>「うんコンボ・・・・？」：相手USEDにある刺客を参照。</p>','wide');
 case 5:return vhPanel('❔ よくある質問','<p><b>Q. 先攻1ターン目はドローする？</b><br>しません。</p><p><b>Q. 使ったカードはどうなる？</b><br>通常はUSEDへ移動しますが、カード効果で別の場所へ動く場合があります。</p><p><b>Q. 山札が0になったら？</b><br>山札切れで敗北します。</p><p><b>Q. 1ターンに何度もカードを使える？</b><br>通常の行動は1回ですが、カード効果による追加使用があります。</p>','span2')+vhPanel('🧠 処理の注意点','<p>カードの使用条件・効果処理・USEDへの移動・付与状態の判定はカードごとに異なります。</p><p>「導く北極星」は2枚引いた後、手札2枚以下ならすべてUSEDへ送ります。</p><p>「必殺ファン●ション」は手札にそのカードだけなら3ダメージ。</p>');
 case 6:return vhPanel('📚 サンプルデッキの見方','<p>デッキ名ごとに構成カードを掲載しています。まず主力カードの使用条件を確認し、手札・USED・山札の管理を意識しましょう。</p>','wide')+vhDecks();
 case 7:return vhPanel('🌐 オンライン対戦の流れ',vhFlow([['① ロビー','🌐','ホームからオンライン対戦へ'],['② 部屋作成','🔑','6桁のコードを発行'],['③ 参加','👥','相手がコードを入力'],['④ 準備','⚔️','両者が準備完了して対戦へ']]),'wide')+vhPanel('🛠️ 困ったとき','<ul><li>両者とも同じ公開サイトにアクセスする</li><li>6桁のコードを確認する</li><li>通信環境・Firebaseへの接続を確認する</li><li>両者が準備完了を押したか確認する</li><li>更新や複数タブでの同時操作は避ける</li></ul>','span2')+vhPanel('⚠️ 対応状況','<p>オンライン対戦は一部のカード効果が試験対応です。BOT対戦と動作が異なる場合は対戦ログを確認してください。</p>');
 }}
-function openVisualHelp(page=1){document.getElementById('visualHelp')?.remove();const overlay=document.createElement('div');overlay.id='visualHelp';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','作成者メモ 図解ガイド');overlay.innerHTML='<div class="vh-shell"><aside class="vh-side"><h2>📖 作成者メモ（ヘルプ）</h2><p>対戦ルール・カード仕様・攻略を図と文章で解説。すべて無料で読めます。</p><div class="vh-nav-list"></div></aside><main class="vh-main"><header class="vh-top"><strong class="vh-title"></strong><button class="vh-close" type="button">✕ 閉じる</button></header><div class="vh-body"></div></main></div>';document.body.append(overlay);const nav=overlay.querySelector('.vh-nav-list');vhPages.forEach(([icon,title,sub],i)=>{const b=document.createElement('button');b.className='vh-nav';b.textContent=icon+' '+(i+1)+' '+title;b.title=sub;b.onclick=()=>vhSelect(i);nav.append(b)});overlay.querySelector('.vh-close').onclick=()=>overlay.remove();overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove()});function vhSelect(i){nav.querySelectorAll('button').forEach((b,j)=>b.classList.toggle('active',j===i));overlay.querySelector('.vh-title').textContent=vhPages[i][0]+' '+(i+1)+' '+vhPages[i][1];const body=overlay.querySelector('.vh-body');body.innerHTML='<div class="vh-grid">'+vhPageHTML(i)+'</div>';const foot=document.createElement('div');foot.className='vh-cta';const original=document.createElement('button');original.textContent='📜 もっと詳しい元の作成者メモを読む';original.onclick=()=>{overlay.remove();vhOriginalMemos[i]()};foot.append(original);if(i<7){const next=document.createElement('button');next.textContent='次の章へ →';next.onclick=()=>vhSelect(i+1);foot.append(next)}body.append(foot);overlay.querySelector('.vh-main').scrollTop=0}vhSelect(Math.max(0,Math.min(7,page)))}
+function openVisualHelp(page=1){document.getElementById('visualHelp')?.remove();const overlay=document.createElement('div');overlay.id='visualHelp';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','作成者メモ 図解ガイド');overlay.innerHTML='<div class="vh-shell"><aside class="vh-side"><h2>📖 作成者メモ（ヘルプ）</h2><p>対戦ルール・カード仕様・攻略を図と文章で解説。すべて無料で読めます。</p><div class="vh-nav-list"></div></aside><main class="vh-main"><header class="vh-top"><strong class="vh-title"></strong><button class="vh-close" type="button">✕ 閉じる</button></header><div class="vh-body"></div></main></div>';document.body.append(overlay);const nav=overlay.querySelector('.vh-nav-list');vhPages.forEach(([icon,title,sub],i)=>{const b=document.createElement('button');b.className='vh-nav';b.textContent=icon+' '+(i+1)+' '+title;b.title=sub;b.onclick=()=>vhSelect(i);nav.append(b)});overlay.querySelector('.vh-close').onclick=()=>overlay.remove();overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove()});function vhSelect(i){nav.querySelectorAll('button').forEach((b,j)=>b.classList.toggle('active',j===i));overlay.querySelector('.vh-title').textContent=vhPages[i][0]+' '+(i+1)+' '+vhPages[i][1];const body=overlay.querySelector('.vh-body');body.innerHTML=vhGraphic(i)+'<div class="vh-grid">'+vhPageHTML(i)+'</div>';const foot=document.createElement('div');foot.className='vh-cta';const original=document.createElement('button');original.textContent='📜 さらに詳しい仕様・原文を読む';original.onclick=()=>{overlay.remove();vhOriginalMemos[i]()};foot.append(original);if(i<7){const next=document.createElement('button');next.textContent='次の章へ →';next.onclick=()=>vhSelect(i+1);foot.append(next)}body.append(foot);overlay.querySelector('.vh-main').scrollTop=0}vhSelect(Math.max(0,Math.min(7,page)))}
 // 既存のショップメモ①〜⑥の入口を、対応する図解ページに接続。
 for(const [oldName,page] of [['homeReadMemo',3],['homeReadMemo2',5],['homeReadMemo3',0],['homeReadMemo4',6],['homeReadMemo5',4],['homeReadMemo6',1]]){window[oldName]=()=>openVisualHelp(page)}
 
