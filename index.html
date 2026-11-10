@@ -267,7 +267,9 @@ body.home-active main.wrap{max-width:none;padding:0}
 @media(max-width:600px){.home-layout{display:block}.home-sidebar{border-right:0;border-bottom:2px solid #c8a45a;padding:8px}.home-logo{padding:5px;font-size:19px}.home-sidebar nav{display:flex;overflow-x:auto;gap:5px}.home-nav{min-width:112px;font-size:12px;justify-content:center;padding:9px 6px;margin:0;gap:5px}.home-nav span{font-size:17px}.home-main{padding:10px}.home-hero{padding:22px 15px}.home-action{min-height:115px;font-size:15px}.home-action .home-emoji{font-size:32px}}
 </style>
 
-<style id="royal-gacha-style">
+<style id="special-card-fx-style">
+.special-card-fx{position:fixed;inset:0;z-index:11000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(circle,#2b1746 0%,#090714 75%);color:#fff;text-align:center;pointer-events:none;animation:scfEntrance 3.2s both;overflow:hidden}.special-card-fx.hidden{display:none!important}.scf-title{font-weight:900;font-size:clamp(18px,4vw,32px);background:linear-gradient(90deg,#f99,#ffe99a,#aaf4c2,#a6b9ff,#eab4ff);background-clip:text;-webkit-background-clip:text;color:transparent}.scf-shadows{display:flex;gap:clamp(10px,5vw,45px);font-size:clamp(44px,10vw,100px);filter:drop-shadow(0 0 15px #fff5)}.scf-shadows span{display:inline-block;animation:scfMorph 3s forwards;opacity:.9}.scf-shadows span:nth-child(2){animation-delay:.2s}.scf-shadows span:nth-child(3){animation-delay:.4s}.scf-shadows span:nth-child(4){animation-delay:.6s}.scf-shadows span:nth-child(5){animation-delay:.8s}.scf-bird{font-size:clamp(70px,17vw,160px);position:absolute;opacity:0;animation:scfBird 3s forwards}.special-card-fx strong{font-size:clamp(40px,10vw,88px);text-shadow:0 0 20px #edbaff;z-index:2}.special-card-fx small{font-size:16px;z-index:2}.special-card-fx.scf-generic{background:radial-gradient(circle at 50% 40%,#4a267a,#120b32 75%)}.special-card-fx.scf-generic .scf-shadows span{animation:scfFloat 6s ease-in-out infinite alternate;opacity:1}.special-card-fx.scf-generic .scf-bird{animation:scfRise 6s ease-in-out both}@keyframes scfFloat{from{transform:translateY(25px) rotate(-10deg)}to{transform:translateY(-35px) rotate(12deg)}}@keyframes scfRise{0%{opacity:0;transform:scale(.2) rotate(-20deg)}45%,85%{opacity:.8;transform:scale(1.15) rotate(5deg)}100%{opacity:0;transform:scale(1.5)}}.rg-fx-options{padding:10px;text-align:center}.rg-fx-options input{width:18px;height:18px;vertical-align:middle}@keyframes scfMorph{0%,30%{transform:scale(1);opacity:.9}65%{transform:scale(.7) rotate(15deg);opacity:.5}100%{transform:scale(.25);opacity:0}}@keyframes scfBird{0%,50%{opacity:0;transform:scale(.4)}85%{opacity:1;transform:scale(1.1)}100%{opacity:1;transform:scale(1)}}@keyframes scfEntrance{0%{opacity:0}8%,88%{opacity:1}100%{opacity:0}}@media(prefers-reduced-motion:reduce){.special-card-fx,.scf-shadows span,.scf-bird{animation:none!important}.scf-bird{opacity:1}.scf-shadows{opacity:0}}
+</style><style id="royal-gacha-style">
 #royalGacha{position:fixed;inset:0;z-index:160000;overflow-y:auto;background:radial-gradient(ellipse at 50% 12%,#274b92 0%,#111d47 42%,#050a20 100%);color:#f7f1ff;padding:18px}
 #royalGacha.hidden{display:none!important}
 .rg-shell{max-width:1140px;margin:auto}.rg-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
@@ -344,10 +346,10 @@ body.home-active main.wrap{max-width:none;padding:0}
 <h2 class="rg-title">✦ 幻想のカード召喚 ✦</h2><p class="rg-sub">輝く魔法陣から、新たなカードを手に入れよう</p>
 <div class="rg-stage" id="rgStage"><div class="rg-particles" id="rgParticles"></div><div class="rg-ring"></div><div class="rg-card-back" id="rgCard">✦</div><div class="rg-reveal-card" id="rgRevealCard" hidden><div class="rg-reveal-kicker" id="rgRevealKicker">獲得カード</div><strong id="rgRevealName"></strong><small id="rgRevealEffect"></small></div><div class="rg-message" id="rgMessage">召喚する回数を選んでください</div></div>
 <div class="rg-controls"><button id="rgOne" onclick="royalDraw(1)">✦ 1回召喚<br>🪙 10</button><button id="rgTen" class="ten" onclick="royalDraw(10)">✧ 10連召喚<br>🪙 100</button><button class="secondary" id="rgSkip" onclick="royalSkip()" disabled>演出をスキップ</button></div>
-<div id="rgResults" class="rg-results" aria-live="polite"></div>
-<details class="rg-details"><summary>排出内容・確率・入手状況を見る</summary><p>1回10コイン。各回10%で「次のショップ商品100コイン引き券」が排出。残り90%でガチャ限定カード19種類が均等確率で排出されます。券は重複して所持でき、次のショップ購入時に全券を使います（最低5コイン）。重複カードは5コインに変換されます。10連召喚は10回分の抽選で、特別な確定枠はありません。</p><div id="rgCollection" class="rg-collection"></div></details>
+<div id="rgResults" class="rg-results" aria-live="polite"></div><div class="rg-fx-options"><label><input id="specialFxToggle" type="checkbox" checked onchange="setSpecialFxEnabled(this.checked)"> 特別演出を表示する（BOT・オンライン共通）</label></div>
+<details class="rg-details"><summary>排出内容・確率・入手状況を見る</summary><p>1回10コイン。各回、虹色の特別演出カード12種類をそれぞれ0.1%で独立抽選（合計1.2%）。残りの抽選は10%で「次のショップ商品100コイン引き券」、90%で通常のガチャ限定カードが均等確率で排出されます。券は重複して所持でき、次のショップ購入時に全券を使います（最低5コイン）。重複カードは5コインに変換されます。10連召喚は10回分の抽選で、特別な確定枠はありません。</p><div id="rgCollection" class="rg-collection"></div></details>
 </div></div>
-<div id="botMatchStart" aria-live="polite"><div class="start-banner"><div class="start-title">試合開始！！！</div><div class="start-sub">BATTLE START</div></div></div><div id="botMobileFx" class="bot-fx-layer" aria-live="polite"><div class="bot-fx-card"><div class="fx-kicker" id="botFxKicker"></div><strong id="botFxName"></strong><small id="botFxDescription"></small></div></div><div id="assassinFx" class="assassin-fx" aria-live="assertive"><div class="assassin-knife">🗡️</div><div class="assassin-text" id="assassinFxText">刺客の襲撃！ −1 HP</div></div><header><h1>⚔ オリジナルカードバトル</h1><div class="row"><button class="secondary" onclick="showBuilder()">デッキ編集</button><button class="secondary" onclick="openTutorial()">📖 ルール体験デモ</button><button class="secondary" onclick="openProgressTab('beginner')">🌟 初心者チャレンジ</button><button class="secondary" onclick="openProgressTab('daily')">📅 デイリーミッション</button><button class="secondary" onclick="openRoyalGacha()">🎰 カードガチャ</button><button class="secondary" onclick="openWallpaperPanel()">🖼️ 壁紙</button><span id="coinDisplay">🪙 0</span><button onclick="startGame('normal')">🤖 通常BOT対戦</button><button onclick="startGauntlet()">🏆 無限連勝チャレンジ</button><span id="streakStartChoices" class="row"></span><button class="secondary" onclick="startGame('beginner')">🌱 初心者モード</button><button class="secondary" onclick="location.href='online.html'">🌐 オンライン対戦ロビー</button><button class="secondary" onclick="location.href='field.html'">⚔ オンライン新フィールド</button></div></header><main class="wrap">
+<div id="specialCardFx" class="special-card-fx hidden" aria-live="polite"><div class="scf-title">🌈 虹色演出カード</div><div class="scf-shadows"><span>♟</span><span>♟</span><span>♟</span><span>♟</span><span>♟</span></div><div class="scf-bird">🐦</div><strong>怪異</strong><small>人影が文鳥の影へと変わっていく……</small></div><div id="botMatchStart" aria-live="polite"><div class="start-banner"><div class="start-title">試合開始！！！</div><div class="start-sub">BATTLE START</div></div></div><div id="botMobileFx" class="bot-fx-layer" aria-live="polite"><div class="bot-fx-card"><div class="fx-kicker" id="botFxKicker"></div><strong id="botFxName"></strong><small id="botFxDescription"></small></div></div><div id="assassinFx" class="assassin-fx" aria-live="assertive"><div class="assassin-knife">🗡️</div><div class="assassin-text" id="assassinFxText">刺客の襲撃！ −1 HP</div></div><header><h1>⚔ オリジナルカードバトル</h1><div class="row"><button class="secondary" onclick="showBuilder()">デッキ編集</button><button class="secondary" onclick="openTutorial()">📖 ルール体験デモ</button><button class="secondary" onclick="openProgressTab('beginner')">🌟 初心者チャレンジ</button><button class="secondary" onclick="openProgressTab('daily')">📅 デイリーミッション</button><button class="secondary" onclick="openRoyalGacha()">🎰 カードガチャ</button><button class="secondary" onclick="openWallpaperPanel()">🖼️ 壁紙</button><span id="coinDisplay">🪙 0</span><button onclick="startGame('normal')">🤖 通常BOT対戦</button><button onclick="startGauntlet()">🏆 無限連勝チャレンジ</button><span id="streakStartChoices" class="row"></span><button class="secondary" onclick="startGame('beginner')">🌱 初心者モード</button><button class="secondary" onclick="location.href='online.html'">🌐 オンライン対戦ロビー</button><button class="secondary" onclick="location.href='field.html'">⚔ オンライン新フィールド</button></div></header><main class="wrap">
 <section id="homeScreen">
 <div class="home-layout">
 <aside class="home-sidebar"><div class="home-logo">✦ オリジナル<br>カードバトル ✦</div>
@@ -964,7 +966,7 @@ function announceBotTurn(who,round){
 function beginTurn(first=false){if(game.over)return;checkToriko();if(game.over)return;game.acted=false;game.lastActionWasCard=false;pending=null;let who=game.turn,p=game.players[who];p.napTurnsActive=false;game.round++;if(p.flamingoReady){const ix=p.hand.findIndex(x=>CARDS[x][2]==='flamingo');if(ix>=0){if(who===1||confirm('フラミンゴ左手の法則を使用して次のカード効果を2倍にしますか？')){moveHandUsed(who,ix);p.flamingoDouble=(p.flamingoDouble||0)+1;log('🦩 フラミンゴ左手の法則：次のカード効果を2倍')}}p.flamingoReady=false}announceBotTurn(who,game.round);log((who===0?'あなた':'BOT')+'のターン');if(p.asleep&&!p.hand.some(id=>CARDS[id][2]==='mugi')){game.acted=true;log('🛏️ 眠り状態：むぎむぎｱﾀｯｸ以外は使用できない');render();queueAutoEnd();return;}if(p.asleep){log('🛏️ 睡眠中：むぎむぎｱﾀｯｸのみ使用可能');render();if(who===1){const match=game,round=game.round;setTimeout(()=>{if(game===match&&game.round===round)botAct()},500)}return;}if(p.napTurns.length){p.napTurns.shift();game.acted=true;p.napTurnsActive=true;log('お昼寝：このターンは通常ドロー・カード使用・2枚攻撃ができない');render();queueAutoEnd();return;}if(!first){if(p.skip||p.permaBlock){log('ドロー封じで通常ドローなし')}else draw(who,1,false)}render();if(who===1&&!game.over){const match=game,round=game.round;setTimeout(()=>{if(game===match&&game.round===round)botAct()},1750)}else if(who===0)queueAutoEnd()}
 const AHАHA_INTERFERENCE_TYPES=new Set(['mill','discard','steal','handpeek','look','searchenemy','swap','shuffleall','mafia','magicsong','library','exorcise','torikoDice','secretbook','hideout','cheese','selectenemy','banish','torture','spy','tidal']);
 function valid(who,index){let p=game.players[who],type=CARDS[index][2];const ward=game.players[1-who].ahahaWard;return !((ward&&(ward.permanent||ward.opponentTurns>0)&&AHАHA_INTERFERENCE_TYPES.has(type))||p.napTurnsActive||(p.asleep&&type!=='mugi')||type==='zodia'&&p.hand.length>3||type==='flamingo'||type==='special3'&&p.hand.length!==1||type==='special5'&&p.hand.length<7||type==='secretbook'&&p.used.length<3||type==='nobook'&&p.hand.some(x=>x!==index&&CARDS[x][0].includes('魔導書'))||type==='tidal'&&!tidalCandidates(who).length||type==='search'&&p.hand.length>2||type==='select'&&p.hand.length<2||type==='heal'&&p.used.length<5||type==='chitose'&&p.hand.length<4||type==='god'||type==='counter'||type==='fe'||type==='oru'||type==='assassin'||type==='cancel'||type==='udon'&&!(game.round===1&&game.turn===who)||type==='nice'&&!(game.players[1-who].life>p.life||game.players[1-who].life<=1))}
-function playCard(who,handIndex){if(game.over||game.turn!==who||game.acted||pending)return;let p=game.players[who],id=p.hand[handIndex];if(id===undefined||!valid(who,id))return;let type=CARDS[id][2];p.hand.splice(handIndex,1);putUsed(who,id);if(type==='zodia'&&p.hand.length>=2&&(who===1||confirm('ゾディア：手札2枚を捨てて追加1ダメージを与えますか？'))){for(let j=0;j<2;j++)moveHandUsed(who,p.hand.length-1);damage(1-who,1,who)}game.acted=true;game.lastActionWasCard=true;game.chancePending=who;if(p.invulnerable){p.invulnerable=false;log('守護結界が終了')} const doubleCard=p.tomato>0&&type!=='tomato'&&effectiveCardName(id).includes('ﾌﾞﾝﾁｮｳ');
+function playCard(who,handIndex){if(game.over||game.turn!==who||game.acted||pending)return;let p=game.players[who],id=p.hand[handIndex];if(id===undefined||!valid(who,id))return;let type=CARDS[id][2];if(typeof playSpecialCardFx==='function')playSpecialCardFx(CARDS[id][0]);p.hand.splice(handIndex,1);putUsed(who,id);if(type==='zodia'&&p.hand.length>=2&&(who===1||confirm('ゾディア：手札2枚を捨てて追加1ダメージを与えますか？'))){for(let j=0;j<2;j++)moveHandUsed(who,p.hand.length-1);damage(1-who,1,who)}game.acted=true;game.lastActionWasCard=true;game.chancePending=who;if(p.invulnerable){p.invulnerable=false;log('守護結界が終了')} const doubleCard=p.tomato>0&&type!=='tomato'&&effectiveCardName(id).includes('ﾌﾞﾝﾁｮｳ');
  const shownCardName=effectiveCardName(id)+(doubleCard?' ×2':'');
  log((who===0?'あなた':'BOT')+'が「'+shownCardName+'」を使用');render(false);enqueueBotFx('card',shownCardName,CARDS[id][1],who===0?'YOUR CARD':'ENEMY CARD',id,who);let other=1-who;
 if(!['god','counter'].includes(type)){
@@ -1543,6 +1545,7 @@ function adminModePurchase(){
  p.unlocked=[...new Set([...p.unlocked,'虜だｿﾞ～～','ガチャの虜','デコバットの一撃','電脳世界ハリケーン'])];
  p.gachaCards=[...new Set([...(Array.isArray(p.gachaCards)?p.gachaCards:[]),...ROYAL_POOL])];
  p.gachaOwned=true;
+ p.specialCards=[...new Set([...(p.specialCards||[]),...SPECIAL_GACHA_NAMES])];
  saveProgress(p);
  localStorage.setItem(UR_UNLOCK_KEY,'yes');
  localStorage.setItem(REWARD_KEY,JSON.stringify([...new Set([...(JSON.parse(localStorage.getItem(REWARD_KEY)||'[]')), ...NEW_REWARDS.map(x=>x[1])]) ]));
@@ -1837,6 +1840,26 @@ document.addEventListener('DOMContentLoaded',()=>{document.getElementById('homeS
 </script>
 
 <script id="royal-gacha-logic">
+const SPECIAL_GACHA_RATE=0.001;
+const SPECIAL_GACHA_NAMES=['究極拳巫女パンチ','眠気があってちゃんと良かったなぽ','必殺ファン●ション','春風と木音','やかましいわ','癒し系アイドル','ピカ犬','タイダル・ウィンド','コールドスリープ','ドラゴン•エール','電脳世界ハリケーン','怪異'];
+const SPECIAL_FX_SCENES={'究極拳巫女パンチ':["⛩️", "🌌", "巫女たちの影が星空の神社に集い、必殺の拳が輝く"],'眠気があってちゃんと良かったなぽ':["🐍", "🛡️", "白蛇と守護者の影が現れ、光の結界が広がる"],'必殺ファン●ション':["🤖", "🐦", "ロボットが起動し、シマエナガとともに必殺ビームを放つ"],'春風と木音':["🌸", "🍃", "春風に撫子の花が舞い、木魚の音が響く"],'やかましいわ':["🎧", "🌃", "暗い路地裏にヘッドホンの影、重低音が響く"],'癒し系アイドル':["🎤", "👻", "アイドルマイクとお化けが紫のステージで輝く"],'ピカ犬':["🐕", "💠", "水色のポメラニアンがふわふわの尻尾を振る"],'タイダル・ウィンド':["🌊", "📚", "砂浜の潮風に古本屋の影と古書が舞う"],'コールドスリープ':["💤", "☁️", "ピンクのバクが夢の雲を漂い、星の寝息が降る"],'ドラゴン•エール':["🐉", "🎶", "ピンクドラゴンの角を持つ少女が歌い、竜の影が舞う"],'電脳世界ハリケーン':["💻", "💗", "電脳空間をリボンとハート、ゲームのシールが駆け巡る"],'怪異':["♟", "🐦", "人影が次々と文鳥の影へと変わっていく……"]};
+const SPECIAL_FX_KEY='ocbSpecialCardFxEnabledV1';
+function specialFxEnabled(){return localStorage.getItem(SPECIAL_FX_KEY)!=='off'}
+function setSpecialFxEnabled(on){localStorage.setItem(SPECIAL_FX_KEY,on?'on':'off')}
+function specialFxOwned(name){try{return (progressState().specialCards||[]).includes(name)}catch{return false}}
+let specialFxTimer=null;
+function playSpecialCardFx(name,force=false){
+ if(!SPECIAL_GACHA_NAMES.includes(name)||!specialFxEnabled()||(!force&&!specialFxOwned(name)))return;
+ const el=document.getElementById('specialCardFx');if(!el)return;
+ clearTimeout(specialFxTimer);
+ const scene=SPECIAL_FX_SCENES[name],isKaii=name==='怪異';
+ el.classList.add('hidden');el.classList.toggle('scf-generic',!isKaii);
+ el.querySelector('strong').textContent=name;el.querySelector('small').textContent=scene[2];
+ el.querySelector('.scf-shadows').innerHTML=isKaii?'<span>♟</span><span>♟</span><span>♟</span><span>♟</span><span>♟</span>':'<span>'+scene[0]+'</span><span>✧</span><span>'+scene[1]+'</span>';
+ el.querySelector('.scf-bird').textContent=isKaii?'🐦':scene[1];
+ void el.offsetWidth;el.classList.remove('hidden');
+ specialFxTimer=setTimeout(()=>el.classList.add('hidden'),isKaii?8500:6000);
+}
 const ROYAL_POOL=['フラミンゴ左手の法則','むぎむぎｱﾀｯｸ','コールドスリープ','癒し系アイドル','封印されし●●ゾディア','ユー ロス！！','異世界放浪録','袴袴袴袴袴褌袴袴','嬌言竜声','ホエール•スクリーム','ドラゴン•エール','ｱﾊﾊｯｽｩーｱﾊﾊﾊ(以下略)',...EXTRA_GACHA_CARDS];
 let royalBusy=false,royalTimer=null,royalPending=null;
 function royalUpdate(){
@@ -1846,7 +1869,7 @@ function royalUpdate(){
  document.getElementById('rgSkip').disabled=!royalBusy;
  const owned=Array.isArray(p.gachaCards)?p.gachaCards:[];
  const grid=document.getElementById('rgCollection');grid.replaceChildren();
- const couponInfo=document.createElement('div');couponInfo.textContent='🎟️ 次のショップ商品100コイン引き券（10%）｜所持：'+shopCouponCount(p)+'枚';grid.append(couponInfo);ROYAL_POOL.forEach((name,i)=>{const item=document.createElement('div');const yes=owned.includes(name)||(name==='ｱﾊﾊｯｽｩーｱﾊﾊﾊ(以下略)'&&p.gachaOwned);item.className=yes?'owned':'';item.textContent=(yes?'✓ 入手済み　':'◇ 未入手　')+name;grid.append(item)});
+ SPECIAL_GACHA_NAMES.forEach(name=>{const specialInfo=document.createElement('div');specialInfo.textContent=(specialFxOwned(name)?'🌈 入手済み　':'🌈 未入手　')+name+'（虹色演出・0.1%）';grid.append(specialInfo)});const toggle=document.getElementById('specialFxToggle');if(toggle)toggle.checked=specialFxEnabled();const couponInfo=document.createElement('div');couponInfo.textContent='🎟️ 次のショップ商品100コイン引き券（10%）｜所持：'+shopCouponCount(p)+'枚';grid.append(couponInfo);ROYAL_POOL.forEach((name,i)=>{const item=document.createElement('div');const yes=owned.includes(name)||(name==='ｱﾊﾊｯｽｩーｱﾊﾊﾊ(以下略)'&&p.gachaOwned);item.className=yes?'owned':'';item.textContent=(yes?'✓ 入手済み　':'◇ 未入手　')+name;grid.append(item)});
  if(typeof homeRefresh==='function')homeRefresh();
 }
 function openRoyalGacha(){
@@ -1882,6 +1905,7 @@ function royalDraw(n){
  p.coins-=cost;p.gachaCards=Array.isArray(p.gachaCards)?p.gachaCards:[];
  const rewards=[];
  for(let i=0;i<n;i++){
+  const specialRoll=Math.random();if(specialRoll<SPECIAL_GACHA_RATE*SPECIAL_GACHA_NAMES.length){const specialName=SPECIAL_GACHA_NAMES[Math.floor(specialRoll/SPECIAL_GACHA_RATE)];p.specialCards=Array.isArray(p.specialCards)?p.specialCards:[];const owned=p.specialCards.includes(specialName);if(!owned)p.specialCards.push(specialName);else p.coins+=5;rewards.push({kind:'special',name:specialName,label:'🌈 '+specialName+'（虹色演出カード）'+(owned?'（重複 → 5コイン）':''),symbol:'🌈'});continue;}
   if(Math.random()<0.10){p.shopCoupons=shopCouponCount(p)+1;rewards.push({kind:'coupon',label:'🎟️ 次のショップ商品100コイン引き券（所持 '+p.shopCoupons+'枚）',symbol:'🎟️'});continue;}const name=ROYAL_POOL[Math.floor(Math.random()*ROYAL_POOL.length)];
   if(p.gachaCards.includes(name)||(name==='ｱﾊﾊｯｽｩーｱﾊﾊﾊ(以下略)'&&p.gachaOwned)){
    p.coins+=5;rewards.push({kind:'duplicate',label:name+'（重複 → 5コイン）',symbol:'♻️'});
@@ -1912,28 +1936,28 @@ function royalReveal(){
  const rewards=royalPending;royalPending=null;royalBusy=false;
  const stage=document.getElementById('rgStage');stage.classList.remove('summoning');stage.classList.add('revealing');
  // Show the obtained card itself in the center of the summoning circle.
- const cardReward=rewards.find(r=>r.kind==='card'||r.kind==='duplicate')||rewards.find(r=>r.kind==='coupon');
+ const cardReward=rewards.find(r=>r.kind==='special'||r.kind==='card'||r.kind==='duplicate')||rewards.find(r=>r.kind==='coupon');
  const reveal=document.getElementById('rgRevealCard');
  if(cardReward){
-  const name=cardReward.kind==='coupon'?'100コイン引き券':cardReward.label.replace(/（重複.*$/,'');
+  const name=cardReward.kind==='coupon'?'100コイン引き券':cardReward.kind==='special'?cardReward.name:cardReward.label.replace(/（重複.*$/,'');
   const id=CARDS.findIndex(c=>c[0]===name);
-  const bg=id>=0?catalogColorKey(id):'linear-gradient(135deg,#ff8dc8,#61a5ff)';
+  const bg=cardReward.kind==='special'?'linear-gradient(120deg,#f76c99,#f8d966,#78e5bd,#74b4f8,#d58bf7)':id>=0?catalogColorKey(id):'linear-gradient(135deg,#ff8dc8,#61a5ff)';
   reveal.style.setProperty('--rg-reveal-bg',bg);
   reveal.style.setProperty('--rg-reveal-fg','#fff');
-  document.getElementById('rgRevealKicker').textContent=cardReward.kind==='coupon'?'🎟️ ショップ割引券獲得':cardReward.kind==='duplicate'?'♻️ 重複カード（5コインに交換）':rewards.length>1?'✦ 10連の獲得カード ✦':'✦ 新カード獲得 ✦';
+  document.getElementById('rgRevealKicker').textContent=cardReward.kind==='special'?'🌈 虹色・特別演出カード確定！':cardReward.kind==='coupon'?'🎟️ ショップ割引券獲得':cardReward.kind==='duplicate'?'♻️ 重複カード（5コインに交換）':rewards.length>1?'✦ 10連の獲得カード ✦':'✦ 新カード獲得 ✦';
   document.getElementById('rgRevealName').textContent=name;
   document.getElementById('rgRevealEffect').textContent=cardReward.kind==='coupon'?'次のショップ購入時に100コイン引き。複数枚重複可・最低5コイン。':id>=0?CARDS[id][1]:'';
-  reveal.hidden=false;stage.classList.add('rg-has-reveal');
+  reveal.hidden=false;stage.classList.add('rg-has-reveal');if(cardReward.kind==='special')playSpecialCardFx(cardReward.name,true);
  }else{
   reveal.hidden=true;stage.classList.remove('rg-has-reveal');
   document.getElementById('rgCard').textContent='🪙';
  }
  const root=document.getElementById('rgResults');root.replaceChildren();
- rewards.forEach((r,i)=>{const el=document.createElement('div');el.className='rg-result '+(r.kind==='card'||r.kind==='coupon'?'card-reward':r.kind==='coin'?'coin-reward':'');el.style.animationDelay=(i*.09)+'s';
+ rewards.forEach((r,i)=>{const el=document.createElement('div');el.className='rg-result '+(r.kind==='special'||r.kind==='card'||r.kind==='coupon'?'card-reward':r.kind==='coin'?'coin-reward':'');el.style.animationDelay=(i*.09)+'s';
  const sym=document.createElement('div');sym.className='symbol';sym.textContent=r.symbol;
  const title=document.createElement('strong');title.textContent=r.label;
  el.append(sym,title);root.append(el)});
- document.getElementById('rgMessage').textContent=rewards.length===10?'✦ 10連召喚 完了！ ✦':rewards[0].kind==='card'?'✦ 新しいカードを獲得！ ✦':rewards[0].kind==='coupon'?'🎟️ 100コイン引き券を獲得！':'✦ 召喚結果が現れた！ ✦';
+ document.getElementById('rgMessage').textContent=rewards.length===10?'✦ 10連召喚 完了！ ✦':rewards[0].kind==='special'?'🌈 虹色の'+rewards[0].name+'を獲得！':rewards[0].kind==='card'?'✦ 新しいカードを獲得！ ✦':rewards[0].kind==='coupon'?'🎟️ 100コイン引き券を獲得！':'✦ 召喚結果が現れた！ ✦';
  royalUpdate();
 }
 function royalSkip(){if(royalBusy)royalReveal()}
