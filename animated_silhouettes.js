@@ -89,6 +89,62 @@ else if(name==='癒し系アイドル'){figure('person',320,150,1.65,'vs-dance')
 else if(name==='タイダル・ウィンド'){shape('M0 222 L640 222 L640 270 L0 270 Z','#f1d6a0');shape('M260 65 L390 65 L390 203 L260 203 Z','#4e3930');shape('M248 65 L400 65 L375 38 L275 38Z','#292d3e');figure('person',450,135,1.25,'vs-sway');el('path',{d:'M0 220 Q80 192 160 220 T320 220 T480 220 T640 220',stroke:'#8ad8e8','stroke-width':12,fill:'none',class:'vs-wave'},svg);for(let i=0;i<4;i++)ornament('▤',80+i*135,90+i%2*40,'vs-petal')}
 else if(name==='電脳世界ハリケーン'){shape('M55 30 L585 30 L585 238 L55 238Z','#1a225c');figure('person',320,150,1.55,'vs-float');for(let i=0;i<9;i++)ornament(['♥','✦','★','▣'][i%4],60+i*66,60+i%3*65,'vs-sticker')}
 else {figure('bird',320,145,1.8,'vs-float')}
+// Scene-specific cinematic layers. The same rendering function is used by BOT and online.
+const fx=el('g',{class:'vs-cinematic-fx'},svg);
+const line=(d,color,cls,width=3,opacity=1)=>el('path',{d,fill:'none',stroke:color,'stroke-width':width,'stroke-linecap':'round',opacity,class:cls},fx);
+const glow=(x,y,r,color,cls)=>el('circle',{cx:x,cy:y,r,fill:color,class:cls},fx);
+const beam=(d,color,cls)=>el('path',{d,fill:color,class:cls},fx);
+const ring=(x,y,r,color,cls)=>el('circle',{cx:x,cy:y,r,fill:'none',stroke:color,'stroke-width':4,class:cls},fx);
+const sparks=(x,y,color,count=12,cls='vs-cine-spark')=>{for(let i=0;i<count;i++){const a=i*2*Math.PI/count;line(`M${x+Math.cos(a)*16} ${y+Math.sin(a)*16} L${x+Math.cos(a)*(43+i%4*13)} ${y+Math.sin(a)*(43+i%4*13)}`,color,cls,1.5+i%3)}};
+if(name==='究極拳巫女パンチ'){
+  ring(385,143,24,'#fff3cf','vs-cine-punch-ring');sparks(385,143,'#fff6d0',18,'vs-cine-punch-spark');
+  beam('M340 139 L590 88 L565 147 L630 171 L352 155Z','#fff3d0','vs-cine-punch-wave');
+  for(let i=0;i<6;i++)line(`M${30+i*19} ${188-i*17} L${165+i*16} ${161-i*13}`,'#f6d5ad','vs-cine-wind',2);
+}else if(name==='眠気があってちゃんと良かったなぽ'){
+  for(let i=0;i<4;i++)ring(320,157,38+i*25,'#e9e4ff','vs-cine-ward-ring');
+  beam('M320 43 Q375 83 425 147 Q350 114 320 43Z','#fff9e4','vs-cine-protection');
+  for(let i=0;i<9;i++)glow(150+i*38,72+i%3*31,2+i%3,'#fffdf0','vs-cine-spirit');
+}else if(name==='必殺ファン●ション'){
+  for(let i=0;i<5;i++)ring(373,156,12+i*12,'#9eeaff','vs-cine-mecha-charge');
+  beam('M365 149 L640 15 L640 264 L365 166Z','#d8faff','vs-cine-mecha-finisher');
+  sparks(570,151,'#f5ffff',20,'vs-cine-mecha-shock');
+}else if(name==='春風と木音'){
+  for(let i=0;i<10;i++)beam(`M${i*70} ${50+i%3*36} Q${i*70+13} ${40+i%3*36} ${i*70+28} ${59+i%3*36} Q${i*70+9} ${77+i%3*36} ${i*70} ${50+i%3*36}Z`,'#ffd2df','vs-cine-petal');
+  for(let i=0;i<4;i++)line(`M${40+i*10} ${160+i*18} Q300 ${95+i*15} 610 ${130+i*20}`,'#fff3db','vs-cine-wind',2);
+  ring(409,207,21,'#ffe7c9','vs-cine-drum-ring');
+}else if(name==='やかましいわ'){
+  for(let i=0;i<7;i++)line(`M${35+i*93} 235 L${35+i*93} ${175-(i%3)*42}`,'#a98dff','vs-cine-equalizer',9);
+  for(let i=0;i<4;i++)ring(320,134,48+i*39,'#b6a4ff','vs-cine-bass');
+  beam('M210 0 L235 0 L435 270 L400 270Z','#b4a0ff','vs-cine-strobe');
+}else if(name==='癒し系アイドル'){
+  for(let i=0;i<5;i++)beam(`M${55+i*120} 0 L${85+i*120} 0 L${330+i*25} 230 L${305+i*25} 230Z`,i%2?'#ffb9ff':'#d5aaff','vs-cine-spotlight');
+  for(let i=0;i<12;i++)glow(35+i*52,230-(i%3)*12,4+i%4,'#ffdbff','vs-cine-crowd');
+  sparks(330,92,'#f9d2ff',12,'vs-cine-idol-spark');
+}else if(name==='ピカ犬'){
+  for(let i=0;i<3;i++)beam(`M${240+i*34} 208 Q${320+i*30} 180 ${385+i*33} 214 Q${320+i*30} 202 ${240+i*34} 208Z`,'#e8fbff','vs-cine-dog-dust');
+  for(let i=0;i<9;i++)line(`M${260+i*15} ${74-i%3*9} L${275+i*15} ${52-i%3*9}`,'#fff','#vs-cine-dog-spark'.replace('#',''),3);
+  ring(318,142,80,'#e9fcff','vs-cine-dog-halo');
+}else if(name==='タイダル・ウィンド'){
+  for(let i=0;i<4;i++)line(`M-40 ${187+i*18} Q85 ${156+i*17} 180 ${187+i*18} T400 ${187+i*18} T680 ${187+i*18}`,'#e5faff','vs-cine-tidal',5-i%2);
+  for(let i=0;i<8;i++)glow(45+i*78,210+i%2*14,3+i%3,'#eaffff','vs-cine-spray');
+  beam('M470 0 L515 0 L400 190 L382 190Z','#fff4cd','vs-cine-sunray');
+}else if(name==='コールドスリープ'){
+  for(let i=0;i<6;i++)ring(315,139,35+i*18,'#ffe2f4','vs-cine-dream-ring');
+  for(let i=0;i<7;i++)glow(60+i*86,72+i%3*26,6+i%3*3,'#fff4fd','vs-cine-dream-bubble');
+  beam('M190 225 Q320 180 450 225 Q320 256 190 225Z','#fbd6f1','vs-cine-dream-mist');
+}else if(name==='ドラゴン•エール'){
+  for(let i=0;i<6;i++)ring(322,143,35+i*22,'#ffd3f2','vs-cine-song-ring');
+  for(let i=0;i<8;i++)beam(`M${375+i*29} ${160-i*12} Q${385+i*29} ${142-i*12} ${399+i*29} ${154-i*12} Q${382+i*29} ${165-i*12} ${375+i*29} ${160-i*12}Z`,'#ffe8f5','vs-cine-song-note');
+  beam('M270 140 Q320 42 370 140 Q320 105 270 140Z','#ffb8e2','vs-cine-dragon-flare');
+}else if(name==='電脳世界ハリケーン'){
+  for(let i=0;i<9;i++)line(`M${45+i*67} 0 L${130+i*53} 270`,'#b3d6ff','vs-cine-digital-rain',1.5);
+  for(let i=0;i<6;i++)ring(320,137,24+i*29,'#f8bdf4','vs-cine-data-ring');
+  beam('M210 85 L385 35 L350 115 L460 180 L235 225 L295 150Z','#ffb5e8','vs-cine-sticker-burst');
+}else if(name==='怪異'){
+  for(let i=0;i<8;i++){const x=58+i*74;ring(x,170,19,'#e5e6ef',`vs-cine-morph vs-cine-morph-${i}`)}
+  for(let i=0;i<5;i++)line(`M${i*145} 0 L${i*145+65} 270`,'#c6c8d4','vs-cine-horror-scratch',1.5);
+  beam('M0 0 L640 0 L640 270 L0 270Z','#fff','vs-cine-horror-flash');
+}
 return svg}
 window.renderMovingSilhouettes=animate;
 })();
