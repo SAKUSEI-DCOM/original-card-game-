@@ -1,0 +1,94 @@
+.vector-shadow-scene{display:block;width:min(92vw,680px);height:auto;max-height:38vh;filter:drop-shadow(0 0 15px #a68bde);border-radius:18px;border:1px solid #77638b;overflow:hidden;flex-shrink:0}
+.vector-shadow-scene .vs-human{animation:vsHuman 7.5s ease-in-out infinite}
+.vector-shadow-scene .vs-bird{animation:vsBird 7.5s ease-in-out infinite}
+.vector-shadow-scene .vs-h0{animation-delay:0s}.vector-shadow-scene .vs-h1{animation-delay:.35s}.vector-shadow-scene .vs-h2{animation-delay:.7s}.vector-shadow-scene .vs-h3{animation-delay:1.05s}.vector-shadow-scene .vs-h4{animation-delay:1.4s}.vector-shadow-scene .vs-h5{animation-delay:1.75s}.vector-shadow-scene .vs-h6{animation-delay:2.1s}.vector-shadow-scene .vs-h7{animation-delay:2.45s}
+@keyframes vsHuman{0%,32%{opacity:1}58%,100%{opacity:0;filter:blur(8px)}}
+@keyframes vsBird{0%,35%{opacity:0}60%,90%{opacity:1}100%{opacity:0}}
+.vector-shadow-scene .vs-float{animation:vsFloat 3s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+@keyframes vsFloat{to{translate:0 -15px;rotate:4deg}}
+.vector-shadow-scene .vs-bounce{animation:vsBounce 1.1s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes vsBounce{50%{translate:0 -22px;scale:1.07 .95}}
+.vector-shadow-scene .vs-wag{animation:vsWag .32s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:left bottom}
+@keyframes vsWag{to{rotate:28deg}}
+.vector-shadow-scene .vs-sway,.vector-shadow-scene .vs-dance{animation:vsSway 1.1s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center bottom}
+@keyframes vsSway{to{rotate:12deg;translate:7px -4px}}
+.vector-shadow-scene .vs-punch{animation:vsPunch 1.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes vsPunch{35%{translate:28px -12px;scale:1.2}65%{translate:-8px 0}}
+.vector-shadow-scene .vs-beat{animation:vsBeat .55s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+@keyframes vsBeat{to{scale:1.17;translate:0 -6px}}
+.vector-shadow-scene .vs-robot{animation:vsRobot 2s steps(3) infinite;transform-box:fill-box;transform-origin:center}
+@keyframes vsRobot{50%{rotate:-8deg;translate:10px -8px}}
+.vector-shadow-scene .vs-wave{animation:vsWave 2s ease-in-out infinite alternate}
+@keyframes vsWave{to{translate:-30px -9px}}
+.vector-shadow-scene .vs-notes,.vector-shadow-scene .vs-petal,.vector-shadow-scene .vs-cloud,.vector-shadow-scene .vs-sticker{animation:vsFloat 2.2s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+.vector-shadow-scene .vs-sticker{animation:vsSticker 2s ease-out infinite}
+@keyframes vsSticker{0%{opacity:0;scale:.1;rotate:-45deg}50%,100%{opacity:1;scale:1;rotate:0deg}}
+.vector-shadow-scene .vs-twinkle{animation:vsTwinkle 1.8s ease-in-out infinite alternate}
+@keyframes vsTwinkle{to{opacity:.2}}
+@media(prefers-reduced-motion:reduce){.vector-shadow-scene *{animation:none!important}}
+
+/* Detailed silhouette accents, using the requested scene colors. */
+.vector-shadow-scene .vs-gate{stroke:#e6b5a4;stroke-width:12;fill:none}
+.vector-shadow-scene .vs-chain{stroke:#d0d3df;stroke-width:5;stroke-dasharray:5 5;fill:none;animation:vsSway 1.3s infinite alternate}
+.vector-shadow-scene .vs-ward{stroke:#fff8e7;stroke-width:3;fill:none;filter:drop-shadow(0 0 12px #fff)}
+.vector-shadow-scene .vs-headphones{stroke:#b0a0f2;stroke-width:11;fill:none}
+.vector-shadow-scene .vs-microphone{stroke:#e9c8fa;stroke-width:8;fill:none}
+.vector-shadow-scene .vs-ghost{opacity:.6;animation:vsFloat 1.6s infinite alternate}
+.vector-shadow-scene .vs-drum{animation:vsBeat .8s infinite alternate}
+.vector-shadow-scene .vs-human,.vector-shadow-scene .vs-bird{transform-box:fill-box;transform-origin:center}
+@media(prefers-reduced-motion:reduce){.vector-shadow-scene *{animation:none!important}}
+
+/* Articulated character animation: limbs, wings, tail, trunk and singing. */
+.vector-shadow-scene .vs-arm,.vector-shadow-scene .vs-wing,.vector-shadow-scene .vs-tail,.vector-shadow-scene .vs-paws,.vector-shadow-scene .vs-legs,.vector-shadow-scene .vs-trunk,.vector-shadow-scene .vs-dragon-wings,.vector-shadow-scene .vs-singing,.vector-shadow-scene .vs-chain-move{transform-box:fill-box;transform-origin:center top}
+.vector-shadow-scene .vs-arm-left{animation:characterLeftArm 1.2s ease-in-out infinite alternate}
+.vector-shadow-scene .vs-arm-right{animation:characterRightArm 1.05s ease-in-out infinite alternate}
+.vector-shadow-scene .vs-wing{animation:characterWing .42s ease-in-out infinite alternate}
+.vector-shadow-scene .vs-tail{animation:characterTail .38s ease-in-out infinite alternate}
+.vector-shadow-scene .vs-paws,.vector-shadow-scene .vs-legs{animation:characterSteps .65s ease-in-out infinite alternate}
+.vector-shadow-scene .vs-trunk{animation:characterTrunk 1.6s ease-in-out infinite alternate}
+.vector-shadow-scene .vs-dragon-wings{animation:characterWing 1.15s ease-in-out infinite alternate}
+.vector-shadow-scene .vs-singing{animation:characterSing .35s ease-in-out infinite alternate}
+.vector-shadow-scene .vs-chain-move{animation:characterTail 1.25s ease-in-out infinite alternate}
+@keyframes characterLeftArm{to{rotate:-24deg;translate:-5px -4px}}
+@keyframes characterRightArm{to{rotate:33deg;translate:5px -7px}}
+@keyframes characterWing{to{rotate:-30deg;scale:1.08 .78}}
+@keyframes characterTail{to{rotate:32deg}}
+@keyframes characterSteps{to{translate:0 -5px;rotate:5deg}}
+@keyframes characterTrunk{to{rotate:17deg;translate:4px 2px}}
+@keyframes characterSing{to{scale:1 1.7}}
+@media(prefers-reduced-motion:reduce){.vector-shadow-scene *{animation:none!important}}
+
+/* 必殺ファン●ション: articulated mecha cinematic finisher, 6s loop */
+.vector-shadow-scene .vs-mecha-hero{animation:mechaHero 6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.vector-shadow-scene .vs-mecha-arm-left,.vector-shadow-scene .vs-mecha-arm-right{transform-box:fill-box;transform-origin:20% 20%}
+.vector-shadow-scene .vs-mecha-arm-right{animation:mechaAim 6s ease-in-out infinite}
+.vector-shadow-scene .vs-mecha-arm-left{animation:mechaBrace 6s ease-in-out infinite}
+.vector-shadow-scene .vs-mecha-core,.vector-shadow-scene .vs-mecha-visor,.vector-shadow-scene .vs-mecha-muzzle{animation:mechaCharge 6s ease-in-out infinite}
+.vector-shadow-scene .vs-mecha-charge{animation:mechaParticles 6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.vector-shadow-scene .vs-mecha-beam,.vector-shadow-scene .vs-mecha-beam-core{animation:mechaFire 6s ease-out infinite;transform-box:fill-box;transform-origin:left center}
+.vector-shadow-scene .vs-mecha-impact{animation:mechaImpact 6s ease-out infinite;transform-box:fill-box;transform-origin:center}
+.vector-shadow-scene .vs-mecha-flash{animation:mechaFlash 6s linear infinite;transform-box:fill-box;transform-origin:center}
+.vector-shadow-scene .vs-mecha-speed{animation:mechaSpeed 6s linear infinite}
+.vector-shadow-scene .vs-mecha-title{animation:mechaTitle 6s linear infinite}
+.vector-shadow-scene .vs-mecha-bird{animation:mechaBird 6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes mechaHero{0%,12%,100%{transform:translateY(5px)}27%,52%{transform:translateY(-8px)}60%{transform:translate(-8px,-6px)}68%,88%{transform:translateY(-4px)}}
+@keyframes mechaAim{0%,15%,100%{transform:rotate(28deg)}29%,52%{transform:rotate(-19deg)}58%,70%{transform:rotate(-23deg)}80%{transform:rotate(5deg)}}
+@keyframes mechaBrace{0%,20%,100%{transform:rotate(-8deg)}35%,70%{transform:rotate(28deg)}}
+@keyframes mechaCharge{0%,17%,77%,100%{opacity:.4;filter:none}35%,55%{opacity:1;filter:drop-shadow(0 0 15px #b8faff)}60%{opacity:1;filter:drop-shadow(0 0 26px white)}}
+@keyframes mechaParticles{0%,20%,58%,100%{opacity:0;transform:scale(1.8)}32%,51%{opacity:1;transform:scale(.55)}}
+@keyframes mechaFire{0%,54%,75%,100%{opacity:0;transform:scaleX(.02) scaleY(.12)}58%{opacity:1;transform:scaleX(1) scaleY(1)}63%{opacity:1;transform:scaleX(1) scaleY(1.25)}71%{opacity:.4;transform:scaleX(1) scaleY(.2)}}
+@keyframes mechaImpact{0%,58%,100%{opacity:0;transform:scale(.1)}63%{opacity:1;transform:scale(.9)}73%{opacity:0;transform:scale(3)}}
+@keyframes mechaFlash{0%,58%,72%,100%{opacity:0;transform:scale(.2)}62%{opacity:1;transform:scale(3)}}
+@keyframes mechaSpeed{0%,54%,75%,100%{opacity:0}60%,68%{opacity:.9}}
+@keyframes mechaTitle{0%,56%,84%,100%{opacity:0;transform:translateY(10px)}64%,76%{opacity:1;transform:translateY(0)}}
+@keyframes mechaBird{0%,54%,100%{transform:translateY(0)}60%,70%{transform:translate(-10px,-13px)}}
+@media(prefers-reduced-motion:reduce){.vector-shadow-scene .vs-mecha-hero,.vector-shadow-scene [class^="vs-mecha-"],.vector-shadow-scene [class*=" vs-mecha-"]{animation:none!important}}
+
+/* Preview and staging refinements */
+.vector-shadow-scene.is-paused *, .vector-shadow-scene.is-paused{animation-play-state:paused!important}
+.vector-shadow-scene .vs-human{filter:drop-shadow(0 0 3px #eee7fa)}
+.vector-shadow-scene .vs-bird{filter:drop-shadow(0 0 5px #eee7fa)}
+@keyframes vsHuman{0%,26%{opacity:1;filter:blur(0)}42%{opacity:.85;filter:blur(1px)}56%{opacity:0;filter:blur(9px)}57%,100%{opacity:0}}
+@keyframes vsBird{0%,29%{opacity:0;transform:scale(.35) rotate(-15deg)}48%{opacity:.3;transform:scale(.7) rotate(8deg)}64%,88%{opacity:1;transform:scale(1) rotate(0)}100%{opacity:0;transform:scale(1.05)}}
+.vector-shadow-scene .vs-h0{animation-delay:0s}.vector-shadow-scene .vs-h1{animation-delay:.4s}.vector-shadow-scene .vs-h2{animation-delay:.8s}.vector-shadow-scene .vs-h3{animation-delay:1.2s}.vector-shadow-scene .vs-h4{animation-delay:1.6s}.vector-shadow-scene .vs-h5{animation-delay:2s}.vector-shadow-scene .vs-h6{animation-delay:2.4s}.vector-shadow-scene .vs-h7{animation-delay:2.8s}
+@media(prefers-reduced-motion:reduce){.vector-shadow-scene *{animation:none!important}}
